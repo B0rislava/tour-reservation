@@ -15,10 +15,12 @@
         <div class="logo">Tourly</div>
         <nav class="nav-links">
             <a href="/" class="active">Discover</a>
-            <a href="#">Bookings</a>
-            <div class="profile-pic">
-                <span>M</span>
-            </div>
+            <a href="/bookings">Bookings</a>
+            <a href="/profile">
+                <div class="profile-pic">
+                    <span>M</span>
+                </div>
+            </a>
         </nav>
     </header>
 
@@ -37,7 +39,8 @@
 
                 <div class="card-content">
                     <div class="title-row">
-                        <h2 class="tour-title" th:text="${tour.title}">Sofia City Walking Tour</h2>
+                        <h2 class="tour-title"><a href="/tours/details" style="text-decoration: none; color: inherit;"
+                                th:text="${tour.title}">Sofia City Walking Tour</a></h2>
                         <div class="rating-badge">
                             <span class="star">★</span> <span
                                 th:text="${tour.rating == 0.0 ? '0.0' : tour.rating}">0.0</span> <span
@@ -53,8 +56,7 @@
                             <span class="icon">⏱</span> <span th:text="${tour.duration}">03:00</span>
                         </div>
                         <div class="detail-item">
-                            <span class="icon">👥</span> Places: <span
-                                th:text="${tour.maxGroupSize - tour.availableSpots}">7</span> / <span
+                            <span class="icon">👥</span> Places: <span th:text="${tour.availableSpots}">7</span> / <span
                                 th:text="${tour.maxGroupSize}">8</span>
                         </div>
                     </div>
@@ -76,7 +78,7 @@
                         <div class="price-amount">€<span th:text="${tour.pricePerPerson}">15</span></div>
                         <div class="price-label">/person</div>
                     </div>
-                    <a href="#" class="btn-book">Book Now</a>
+                    <a href="/tours/details" class="btn-book">Book Now</a>
                 </div>
 
             </article>

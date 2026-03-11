@@ -10,6 +10,8 @@
     --rating-text: #FBA335;
     --bottom-bar-bg: #F4EFFF;
     --guide-bg: #FAFAFC;
+    --border: #E8E7EC;
+    --accent: #EDA77E;
 }
 
 * {
@@ -290,4 +292,162 @@ body {
 
 .btn-book:hover {
     background-color: var(--btn-bg-hover);
+}
+
+/* ============ Tour Details Page ============ */
+.details-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 3rem;
+    margin-top: 1rem;
+}
+
+.details-hero-img {
+    width: 100%;
+    height: 450px;
+    object-fit: cover;
+    border-radius: 28px;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 40px rgba(52, 40, 74, 0.05);
+}
+
+.details-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    line-height: 1.1;
+}
+
+.booking-widget {
+    background: var(--card-bg);
+    padding: 2.5rem;
+    border-radius: 28px;
+    box-shadow: 0 14px 50px rgba(52, 40, 74, 0.08);
+    position: sticky;
+    top: 100px;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.form-control {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--text-primary);
+    outline: none;
+}
+
+.form-control:focus {
+    border-color: var(--accent);
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+/* ============ Bookings Page ============ */
+.page-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.booking-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.booking-item {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 1.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 5px 20px rgba(52, 40, 74, 0.05);
+}
+
+.booking-info h3 {
+    font-size: 1.4rem;
+    color: var(--text-primary);
+}
+
+.booking-status {
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    background: #e0f8e9;
+    color: #2e7d32;
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    padding: 0.6rem 1.2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+    background: #f1f5f9;
+    color: var(--text-primary);
+}
+
+/* ============ Profile Page ============ */
+.profile-card {
+    background: var(--card-bg);
+    border-radius: 28px;
+    padding: 4rem 2rem;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(52, 40, 74, 0.05);
+    max-width: 600px;
+    margin: 2rem auto;
+}
+
+.profile-avatar-lg {
+    width: 120px;
+    height: 120px;
+    background: #e0d9ff;
+    color: var(--text-primary);
+    font-size: 3.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem auto;
+}
+
+.profile-card h2 {
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.profile-card p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
 }

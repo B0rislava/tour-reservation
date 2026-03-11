@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | Tourly</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<body>
+    <!-- Top Menu -->
+    <header class="navbar">
+        <div class="logo">Tourly</div>
+        <nav class="nav-links">
+            <a href="/">Discover</a>
+            <a href="/bookings">Bookings</a>
+            <a href="/profile" class="active">
+                <div class="profile-pic">
+                    <span>M</span>
+                </div>
+            </a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="profile-card">
+            <div class="profile-avatar-lg">M</div>
+            <h2>Maria Georgieva</h2>
+            <p>user@tourly.com</p>
+
+            <div style="margin-top: 2rem;">
+                <button class="btn-book" style="border: none; cursor: pointer;">Edit Profile</button>
+                <button class="btn-secondary" style="margin-left: 1rem;">Logout</button>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

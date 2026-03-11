@@ -14,9 +14,22 @@ public class TourController {
 
     @GetMapping("/")
     public String index(Model model) {
-
         model.addAttribute("tours", tourService.getAllTours());
-        
         return "index";
+    }
+
+    @GetMapping("/tours/details")
+    public String tourDetails() {
+        return "tour-details";
+    }
+
+    @GetMapping("/bookings")
+    public String bookings() {
+        return "bookings";
+    }
+
+    @GetMapping("/profile")
+    public String profile() {
+        return "profile";
     }
 }

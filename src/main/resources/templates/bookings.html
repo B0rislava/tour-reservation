@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings | Tourly</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<body>
+    <!-- Top Menu -->
+    <header class="navbar">
+        <div class="logo">Tourly</div>
+        <nav class="nav-links">
+            <a href="/">Discover</a>
+            <a href="/bookings" class="active">Bookings</a>
+            <a href="/profile">
+                <div class="profile-pic">
+                    <span>M</span>
+                </div>
+            </a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h1 class="page-title">My Bookings</h1>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">Manage your upcoming and past trips.</p>
+
+        <div class="booking-list">
+            <!-- Sample Booking Item -->
+            <div class="booking-item">
+                <div class="booking-info">
+                    <h3><a href="/tours/details" style="text-decoration: none; color: inherit;">The Seven Rila Lakes</a>
+                    </h3>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
+                        <span>📅 Date: 2026-04-15</span> | <span>👥 Persons: 2</span>
+                    </div>
+                </div>
+                <div class="booking-actions" style="display: flex; gap: 1rem; align-items: center;">
+                    <span class="booking-status">CONFIRMED</span>
+                    <button class="btn-secondary">Cancel</button>
+                </div>
+            </div>
+
+            <!-- Sample Booking Item 2 -->
+            <div class="booking-item">
+                <div class="booking-info">
+                    <h3><a href="/tours/details" style="text-decoration: none; color: inherit;">Varna & Aladzha
+                            Monastery Tour</a></h3>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
+                        <span>📅 Date: 2026-05-20</span> | <span>👥 Persons: 4</span>
+                    </div>
+                </div>
+                <div class="booking-actions" style="display: flex; gap: 1rem; align-items: center;">
+                    <span class="booking-status">CONFIRMED</span>
+                    <button class="btn-secondary">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>
