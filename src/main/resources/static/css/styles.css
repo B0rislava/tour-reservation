@@ -1,0 +1,293 @@
+:root {
+    --bg-color: #fafbfc;
+    --card-bg: #ffffff;
+    --text-primary: #34284A;
+    --text-secondary: #8A889A;
+    --price-color: #FBA335;
+    --btn-bg: #EDA77E;
+    --btn-bg-hover: #e0966b;
+    --rating-bg: #FFF1E6;
+    --rating-text: #FBA335;
+    --bottom-bar-bg: #F4EFFF;
+    --guide-bg: #FAFAFC;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    line-height: 1.5;
+    min-height: 100vh;
+}
+
+/* ============ Menu (Navbar) ============ */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 5%;
+    background: var(--card-bg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-links a.active,
+.nav-links a:hover {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.profile-pic {
+    width: 40px;
+    height: 40px;
+    background-color: #e0d9ff;
+    color: var(--text-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* ============ Main Layout & Grid ============ */
+.container {
+    padding: 2rem 5%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.tours-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.warning-empty {
+    text-align: center;
+    grid-column: 1 / -1;
+    color: var(--text-secondary);
+    padding: 3rem;
+    font-size: 1.5rem;
+}
+
+/* ============ Card ============ */
+.tour-card {
+    background: var(--card-bg);
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(52, 40, 74, 0.05);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tour-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 50px rgba(52, 40, 74, 0.1);
+}
+
+/* The image */
+.card-image-wrapper {
+    position: relative;
+    height: 180px;
+}
+
+.tour-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Heart icon */
+.heart-icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: #ff6b6b;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ============ Content below the image ============ */
+.card-content {
+    padding: 1.2rem;
+    flex-grow: 1;
+}
+
+/* Title and rating on the same line */
+.title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+.tour-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.rating-badge {
+    background: var(--rating-bg);
+    color: var(--rating-text);
+    padding: 0.3rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    white-space: nowrap;
+}
+
+.review-count {
+    font-weight: 500;
+    opacity: 0.7;
+}
+
+/* Details (Location, Date, Places) */
+.tour-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.detail-item {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+}
+
+.detail-item .icon {
+    color: #b5b3c0;
+}
+
+/* ============ Your Guide Box ============ */
+.guide-box {
+    background-color: var(--guide-bg);
+    border-radius: 16px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.guide-avatar-wrapper {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--btn-bg);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.guide-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.guide-name {
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 1.05rem;
+}
+
+.guide-rating {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.guide-rating .star {
+    color: var(--price-color);
+}
+
+/* ============ Bottom Bar (Price and Button) ============ */
+.card-footer {
+    background-color: var(--bottom-bar-bg);
+    padding: 1rem 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.price-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.price-amount {
+    color: var(--price-color);
+    font-size: 1.6rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.price-label {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-top: 0.2rem;
+}
+
+.btn-book {
+    background-color: var(--btn-bg);
+    color: white;
+    text-decoration: none;
+    padding: 0.8rem 1.8rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: background-color 0.2s;
+}
+
+.btn-book:hover {
+    background-color: var(--btn-bg-hover);
+}

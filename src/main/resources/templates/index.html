@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tourly | Discover</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="logo">Tourly</div>
+        <nav class="nav-links">
+            <a href="/" class="active">Discover</a>
+            <a href="#">Bookings</a>
+            <div class="profile-pic">
+                <span>M</span>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="tours-grid">
+            <div class="warning-empty" th:if="${#lists.isEmpty(tours)}">
+                Oops! There are no tours available right now.
+            </div>
+
+            <article class="tour-card" th:each="tour : ${tours}">
+
+                <div class="card-image-wrapper">
+                    <img th:src="${tour.imageUrl}" th:alt="${tour.title}" class="tour-image" />
+                    <div class="heart-icon">🤍</div>
+                </div>
+
+                <div class="card-content">
+                    <div class="title-row">
+                        <h2 class="tour-title" th:text="${tour.title}">Sofia City Walking Tour</h2>
+                        <div class="rating-badge">
+                            <span class="star">★</span> <span
+                                th:text="${tour.rating == 0.0 ? '0.0' : tour.rating}">0.0</span> <span
+                                class="review-count">(<span th:text="${tour.reviewsCount}">0</span>)</span>
+                        </div>
+                    </div>
+
+                    <div class="tour-details">
+                        <div class="detail-item">
+                            <span class="icon">📍</span> <span th:text="${tour.location}">Sofia, Bulgaria</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="icon">⏱</span> <span th:text="${tour.duration}">03:00</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="icon">👥</span> Places: <span
+                                th:text="${tour.maxGroupSize - tour.availableSpots}">7</span> / <span
+                                th:text="${tour.maxGroupSize}">8</span>
+                        </div>
+                    </div>
+
+                    <div class="guide-box">
+                        <div class="guide-avatar-wrapper">
+                            <span class="guide-letter" th:text="${#strings.substring(tour.guideName,0,1)}">A</span>
+                        </div>
+                        <div class="guide-info">
+                            <div class="guide-name" th:text="${tour.guideName}">Alexandra Petrova</div>
+                            <div class="guide-rating"><span class="star">★</span> 5.0</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card-footer">
+                    <div class="price-container">
+                        <div class="price-amount">€<span th:text="${tour.pricePerPerson}">15</span></div>
+                        <div class="price-label">/person</div>
+                    </div>
+                    <a href="#" class="btn-book">Book Now</a>
+                </div>
+
+            </article>
+        </section>
+    </main>
+</body>
+
+</html>
