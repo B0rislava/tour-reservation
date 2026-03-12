@@ -29,19 +29,32 @@
         <div class="details-container">
             <!-- Left Side: Images, Info, Guide -->
             <div class="details-content">
-                <img src="https://seadream.com/images/ports/Varna,%20Bulgaria.jpeg" alt="Tour Cover"
-                    class="details-hero-img">
+                <img th:src="${tour.imageUrl}" th:alt="${tour.title}" class="details-hero-img">
 
-                <h1 class="details-title">Sample Tour Title</h1>
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <h1 class="details-title" th:text="${tour.title}" style="margin-bottom: 0;">Sample Tour Title</h1>
+                    <div class="rating-badge" style="padding: 0.5rem 0.8rem; font-size: 1rem;">
+                        <span class="star">★</span> <span th:text="${tour.rating}">0.0</span>
+                        <span class="review-count">(<span th:text="${tour.reviewsCount}">0</span>)</span>
+                    </div>
+                </div>
 
                 <div class="tour-details" style="margin-bottom: 2rem;">
-                    <div class="detail-item"><span class="icon">📍</span> Location, Country</div>
-                    <div class="detail-item"><span class="icon">⏱</span> 05:00 hours</div>
-                    <div class="detail-item"><span class="icon">👥</span> Places: 10 / 15</div>
+                    <div class="detail-item">
+                        <span class="icon">📍</span> <span th:text="${tour.location}">Location, Country</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="icon">⏱</span> <span th:text="${tour.duration}">05:00 hours</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="icon">👥</span> Places: <span th:text="${tour.availableSpots}">10</span> / <span
+                            th:text="${tour.maxGroupSize}">15</span>
+                    </div>
                 </div>
 
                 <h3>About this tour</h3>
-                <p style="color: var(--text-secondary); margin-top: 1rem; margin-bottom: 2rem; line-height: 1.8;">
+                <p style="color: var(--text-secondary); margin-top: 1rem; margin-bottom: 2rem; line-height: 1.8;"
+                    th:text="${tour.description}">
                     This is a placeholder description of the tour. It will eventually contain the full text
                     from the database describing all the awesome things you will see and do during this trip.
                 </p>
@@ -49,10 +62,10 @@
                 <h3>Your guide</h3>
                 <div class="guide-box" style="margin-top: 1rem; max-width: 400px;">
                     <div class="guide-avatar-wrapper">
-                        <span class="guide-letter">G</span>
+                        <span class="guide-letter" th:text="${#strings.substring(tour.guideName,0,1)}">G</span>
                     </div>
                     <div class="guide-info">
-                        <div class="guide-name">Guide Name</div>
+                        <div class="guide-name" th:text="${tour.guideName}">Guide Name</div>
                         <div class="guide-rating"><span class="star">★</span> 5.0</div>
                     </div>
                 </div>
@@ -62,23 +75,29 @@
             <div class="details-sidebar">
                 <div class="booking-widget">
                     <div class="price-container" style="margin-bottom: 1.5rem;">
-                        <div class="price-amount">€45</div>
+                        <div class="price-amount">€<span th:text="${tour.pricePerPerson}">45</span></div>
                         <div class="price-label">/person</div>
                     </div>
 
-                    <form action="#" method="POST">
+                    <!-- Display error if booking failed -->
+                    <div th:if="${param.error}"
+                        style="color: #ff6b6b; font-size: 0.9rem; margin-bottom: 1rem; font-weight: 500;">
+                        <span th:text="${param.error}">Error message</span>
+                    </div>
+
+                    <form th:action="@{/bookings/create}" method="POST">
+                        <input type="hidden" name="tourId" th:value="${tour.id}">
                         <div class="form-group">
-                            <label>Participants</label>
-                            <label>
-                                <select class="form-control" name="participants">
-                                    <option value="1">1 Person</option>
-                                    <option value="2">2 Persons</option>
-                                    <option value="3">3 Persons</option>
-                                    <option value="4">4 Persons</option>
-                                </select>
-                            </label>
+                            <label for="participants">Participants</label>
+                            <select class="form-control" name="participants" id="participants">
+                                <option value="1">1 Person</option>
+                                <option value="2">2 Persons</option>
+                                <option value="3">3 Persons</option>
+                                <option value="4">4 Persons</option>
+                                <option value="5">5 Persons</option>
+                            </select>
                         </div>
-                        <button type="button" class="btn-book btn-block">Confirm Booking</button>
+                        <button type="submit" class="btn-book btn-block">Confirm Booking</button>
                     </form>
                 </div>
             </div>

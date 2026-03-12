@@ -27,9 +27,10 @@
 
     <main class="container">
         <div class="profile-card">
-            <div class="profile-avatar-lg">M</div>
-            <h2>Maria Georgieva</h2>
-            <p>user@tourly.com</p>
+            <div class="profile-avatar-lg" th:text="${#strings.substring(user.firstName,0,1)}">M</div>
+            <h2 th:text="${user.firstName + ' ' + user.lastName}">Maria Georgieva</h2>
+            <p th:text="${user.email}">user@tourly.com</p>
+            <p th:text="${user.bio}" style="margin-top: 1rem; font-style: italic;">User bio goes here...</p>
 
             <div style="margin-top: 2rem;">
                 <button class="btn-book" style="border: none; cursor: pointer;">Edit Profile</button>

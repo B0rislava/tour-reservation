@@ -39,8 +39,9 @@
 
                 <div class="card-content">
                     <div class="title-row">
-                        <h2 class="tour-title"><a href="/tours/details" style="text-decoration: none; color: inherit;"
-                                th:text="${tour.title}">Sofia City Walking Tour</a></h2>
+                        <h2 class="tour-title"><a th:href="@{/tours/{id}(id=${tour.id})}"
+                                style="text-decoration: none; color: inherit;" th:text="${tour.title}">Sofia City
+                                Walking Tour</a></h2>
                         <div class="rating-badge">
                             <span class="star">★</span> <span
                                 th:text="${tour.rating == 0.0 ? '0.0' : tour.rating}">0.0</span> <span
@@ -78,7 +79,7 @@
                         <div class="price-amount">€<span th:text="${tour.pricePerPerson}">15</span></div>
                         <div class="price-label">/person</div>
                     </div>
-                    <a href="/tours/details" class="btn-book">Book Now</a>
+                    <a th:href="@{/tours/{id}(id=${tour.id})}" class="btn-book">Book Now</a>
                 </div>
 
             </article>
