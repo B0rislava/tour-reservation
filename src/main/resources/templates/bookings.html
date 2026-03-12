@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -13,15 +13,25 @@
 <body>
     <!-- Top Menu -->
     <header class="navbar">
-        <div class="logo">Tourly</div>
+        <a href="/" style="text-decoration: none; color: inherit;">
+            <div class="logo">Tourly</div>
+        </a>
         <nav class="nav-links">
             <a href="/">Discover</a>
-            <a href="/bookings" class="active">Bookings</a>
-            <a href="/profile">
-                <div class="profile-pic">
-                    <span>M</span>
-                </div>
-            </a>
+
+            <th:block sec:authorize="isAuthenticated()">
+                <a href="/bookings" class="active">Bookings</a>
+                <a href="/profile">
+                    <div class="profile-pic">
+                        <span
+                            th:text="${#strings.substring(#authentication.principal.firstName, 0, 1).toUpperCase()}">M</span>
+                    </div>
+                </a>
+            </th:block>
+
+            <th:block sec:authorize="isAnonymous()">
+                <a href="/login" class="btn-book" style="padding: 0.5rem 1.5rem;">Login</a>
+            </th:block>
         </nav>
     </header>
 

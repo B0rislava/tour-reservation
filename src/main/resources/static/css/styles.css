@@ -517,3 +517,53 @@ body {
     font-size: 0.9rem;
     font-weight: 500;
 }
+
+/* ============ Profile Page ============ */
+.profile-no-scroll {
+    overflow: hidden !important;
+}
+
+.profile-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 80px);
+}
+
+.profile-card-compact {
+    margin: 0;
+    max-width: 420px;
+    width: 100%;
+}
+
+.profile-actions {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.profile-actions .btn-book,
+.profile-actions .btn-secondary {
+    flex: 1;
+    text-align: center;
+    padding: 0.8rem 0;
+    cursor: pointer;
+    border: none;
+    display: inline-block;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.profile-actions .btn-secondary {
+    border: 1px solid var(--border);
+    background-color: transparent;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+}
+
+.profile-actions .btn-secondary:hover {
+    background-color: #f8f9fa;
+    color: var(--text-primary);
+    border-color: var(--text-secondary);
+}

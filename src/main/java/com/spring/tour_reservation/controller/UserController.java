@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.security.Principal;
+
 @Controller
 @RequiredArgsConstructor
 public class UserController {
@@ -14,9 +16,8 @@ public class UserController {
     private final UserRepository userRepository;
 
     @GetMapping("/profile")
-    public String profile(Model model) {
-        // Hardcoded Maria Georgieva's ID
-        User user = userRepository.findById(2L).orElseThrow(() -> new RuntimeException("User not found"));
+    public String profile(Model model, Principal principal) {
+        User user = userRepository.findByEmail(principal.getName()).orElseThrow();
         model.addAttribute("user", user);
         return "profile";
     }
