@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,6 +27,7 @@ public class DataInitializer implements CommandLineRunner {
     private final TourRepository tourRepository;
     private final BookingRepository bookingRepository;
     private final ReviewRepository reviewRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String @NonNull ... args) {
@@ -37,7 +39,7 @@ public class DataInitializer implements CommandLineRunner {
                     .email("guide@tourly.com")
                     .firstName("Ivan")
                     .lastName("Ivanov")
-                    .password("secret123") 
+                    .password(passwordEncoder.encode("secret123")) 
                     .role(UserRole.GUIDE)
                     .bio("Veteran guide with 15 years of experience in the mountains.")
                     .build();
@@ -47,7 +49,7 @@ public class DataInitializer implements CommandLineRunner {
                     .email("user@tourly.com")
                     .firstName("Maria")
                     .lastName("Georgieva")
-                    .password("pass123")
+                    .password(passwordEncoder.encode("pass123"))
                     .role(UserRole.TRAVELER)
                     .build();
             userRepository.save(traveler);

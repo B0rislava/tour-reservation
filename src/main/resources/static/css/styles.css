@@ -66,6 +66,11 @@ body {
     font-weight: 700;
 }
 
+.nav-links a.btn-book,
+.nav-links a.btn-book:hover {
+    color: white;
+}
+
 .profile-pic {
     width: 40px;
     height: 40px;
@@ -450,4 +455,65 @@ body {
 .profile-card p {
     color: var(--text-secondary);
     font-size: 1.1rem;
+}
+
+/* ============ Login Page ============ */
+.login-layout {
+    display: flex;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #F4EFFF 0%, #FFFFFF 100%);
+}
+
+.login-card {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 32px;
+    box-shadow: 0 20px 60px rgba(52, 40, 74, 0.08);
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+}
+
+.login-logo {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #7C3AED;
+    margin-bottom: 1.2rem;
+    display: block;
+    text-decoration: none;
+}
+
+.login-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    color: var(--text-primary);
+}
+
+.login-subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.alert-error {
+    background: #FFF0F0;
+    color: #D64545;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.alert-logout {
+    background: #F0F7FF;
+    color: #4589D6;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
 }
