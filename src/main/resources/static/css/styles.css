@@ -531,6 +531,11 @@ body {
 }
 
 .profile-card-compact {
+    background: var(--card-bg);
+    border-radius: 28px;
+    padding: 3rem 2rem;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(52, 40, 74, 0.05);
     margin: 0;
     max-width: 420px;
     width: 100%;
