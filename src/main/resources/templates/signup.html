@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Tourly</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<body class="login-layout">
+    <div class="login-card" style="max-width: 480px;">
+        <a href="/" class="login-logo">Tourly</a>
+        <h2 class="login-title">Create Account</h2>
+        <p class="login-subtitle">Join us and start exploring the world</p>
+
+        <!-- Error message -->
+        <div th:if="${registrationError}" class="alert-error" th:text="${registrationError}">
+            Registration failed.
+        </div>
+
+        <form th:action="@{/signup}" th:object="${user}" method="POST">
+            <div style="display: flex; gap: 1rem;">
+                <div class="form-group" style="text-align: left; flex: 1;">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" th:field="*{firstName}" class="form-control" placeholder="John" required>
+                </div>
+                <div class="form-group" style="text-align: left; flex: 1;">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" th:field="*{lastName}" class="form-control" placeholder="Doe" required>
+                </div>
+            </div>
+            
+            <div class="form-group" style="text-align: left;">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="name@example.com" required>
+            </div>
+            
+            <div class="form-group" style="text-align: left;">
+                <label for="password">Password</label>
+                <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Create a password" required>
+            </div>
+            
+            <div class="form-group" style="text-align: left;">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control" placeholder="Repeat your password" required>
+            </div>
+            
+            <button type="submit" class="btn-book btn-block" style="margin-top: 1rem; padding: 1rem;">Sign Up</button>
+        </form>
+
+        <p style="margin-top: 1.2rem; color: var(--text-secondary); font-size: 0.9rem;">
+            Already have an account? <a th:href="@{/login}"
+                style="color: var(--accent); font-weight: 600; text-decoration: none;">Sign In</a>
+        </p>
+    </div>
+</body>
+
+</html>

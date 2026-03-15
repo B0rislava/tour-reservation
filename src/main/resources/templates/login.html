@@ -27,6 +27,11 @@
             You have been logged out.
         </div>
 
+        <!-- Registration success message -->
+        <div th:if="${registrationSuccess}" class="alert-logout" style="background: #e0f8e9; color: #2e7d32;">
+            <p th:text="${registrationSuccess}"></p>
+        </div>
+
         <form th:action="@{/login}" method="POST">
             <div class="form-group" style="text-align: left;">
                 <label for="username">Email Address</label>
@@ -42,7 +47,7 @@
         </form>
 
         <p style="margin-top: 1.2rem; color: var(--text-secondary); font-size: 0.9rem;">
-            Don't have an account? <a href="#"
+            Don't have an account? <a th:href="@{/signup}"
                 style="color: var(--accent); font-weight: 600; text-decoration: none;">Sign
                 Up</a>
         </p>
