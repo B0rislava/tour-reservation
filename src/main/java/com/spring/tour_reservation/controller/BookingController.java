@@ -1,21 +1,23 @@
 package com.spring.tour_reservation.controller;
 
+import com.spring.tour_reservation.dto.BookingDto;
 import com.spring.tour_reservation.model.User;
 import com.spring.tour_reservation.repository.UserRepository;
 import com.spring.tour_reservation.service.BookingService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
+import java.util.List;
+import java.util.Map;
 
-@Controller
-@RequestMapping("/bookings")
+@RestController
+@RequestMapping("/api/v1/bookings")
 @RequiredArgsConstructor
 public class BookingController {
 
@@ -23,42 +25,38 @@ public class BookingController {
     private final UserRepository userRepository;
 
     @GetMapping
-    public String listBookings(Model model, Principal principal) {
+    public ResponseEntity<List<BookingDto>> listBookings(Principal principal) {
+        if (principal == null) return ResponseEntity.status(401).build();
         User user = userRepository.findByEmail(principal.getName()).orElseThrow();
-        model.addAttribute("bookings", bookingService.getBookingsForUser(user.getId()));
-        return "bookings";
+        return ResponseEntity.ok(bookingService.getBookingsForUser(user.getId()));
     }
 
     @PostMapping("/create")
-    public String createBooking(@RequestParam Long tourId, 
-                                @RequestParam int participants,
-                                Principal principal,
-                                RedirectAttributes redirectAttributes) {
+    public ResponseEntity<?> createBooking(@RequestParam Long tourId, 
+                                           @RequestParam int participants,
+                                           Principal principal) {
+        if (principal == null) return ResponseEntity.status(401).build();                                    
         User user = userRepository.findByEmail(principal.getName()).orElseThrow();
         
         try {
             bookingService.bookTour(user.getId(), tourId, participants);
-            redirectAttributes.addAttribute("success", "");
-            return "redirect:/bookings";
+            return ResponseEntity.ok(Map.of("message", "Booking confirmed successfully!"));
         } catch (Exception e) {
-            redirectAttributes.addAttribute("error", e.getMessage());
-            return "redirect:/tours/" + tourId;
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 
     @PostMapping("/cancel")
-    public String cancelBooking(@RequestParam Long bookingId,
-                                Principal principal,
-                                RedirectAttributes redirectAttributes) {
+    public ResponseEntity<?> cancelBooking(@RequestParam Long bookingId,
+                                           Principal principal) {
+        if (principal == null) return ResponseEntity.status(401).build();
         User user = userRepository.findByEmail(principal.getName()).orElseThrow();
 
         try {
             bookingService.cancelBooking(bookingId, user.getId());
-            redirectAttributes.addAttribute("cancelled", "true");
+            return ResponseEntity.ok(Map.of("message", "Booking successfully cancelled."));
         } catch (Exception e) {
-            redirectAttributes.addAttribute("error", e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
-
-        return "redirect:/bookings";
     }
 }

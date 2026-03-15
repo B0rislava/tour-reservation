@@ -2,27 +2,28 @@ package com.spring.tour_reservation.controller;
 
 import com.spring.tour_reservation.service.TourService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.http.ResponseEntity;
+import java.util.List;
+import com.spring.tour_reservation.dto.TourDto;
 
-@Controller
+@RestController
+@RequestMapping("/api/v1/tours")
 @RequiredArgsConstructor
 public class TourController {
 
     private final TourService tourService;
 
-    @GetMapping("/")
-    public String index(Model model) {
-        model.addAttribute("tours", tourService.getAllTours());
-        return "index";
+    @GetMapping
+    public ResponseEntity<List<TourDto>> getAllTours() {
+        return ResponseEntity.ok(tourService.getAllTours());
     }
 
-    @GetMapping("/tours/{id}")
-    public String tourDetails(@PathVariable Long id, Model model) {
-        model.addAttribute("tour", tourService.getTourById(id));
-        return "tour-details";
+    @GetMapping("/{id}")
+    public ResponseEntity<TourDto> getTourDetails(@PathVariable Long id) {
+        return ResponseEntity.ok(tourService.getTourById(id));
     }
-
 }

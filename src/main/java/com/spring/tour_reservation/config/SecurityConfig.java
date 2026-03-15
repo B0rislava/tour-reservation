@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,24 +22,26 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) {
         try {
             http
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/", "/tours/**", "/css/**", "/js/**", "/images/**", "/h2-console/**", "/signup").permitAll()
-                    .requestMatchers("/bookings/**", "/profile/**").hasAnyRole("TRAVELER", "GUIDE")
+                    .requestMatchers("/api/v1/auth/**", "/api/v1/tours/**", "/css/**", "/js/**", "/images/**", "/h2-console/**", "/v3/api-docs/**", "/swagger-ui/**", "/*.html", "/").permitAll()
+                    .requestMatchers("/api/v1/bookings/**", "/api/v1/users/**").hasAnyRole("TRAVELER", "GUIDE")
                     .anyRequest().authenticated()
                 )
+                .exceptionHandling(exc -> exc
+                    .authenticationEntryPoint((req, res, authExc) -> res.setStatus(401))
+                )
                 .formLogin(form -> form
-                    .loginPage("/login")
-                    .defaultSuccessUrl("/", true)
+                    .loginProcessingUrl("/api/v1/auth/login")
+                    .successHandler((req, res, auth) -> res.setStatus(200))
+                    .failureHandler((req, res, exc) -> res.setStatus(401))
                     .permitAll()
                 )
                 .logout(logout -> logout
-                    .logoutRequestMatcher(request -> 
-                        request.getMethod().equals("GET") && request.getServletPath().equals("/logout")
-                    )
-                    .logoutSuccessUrl("/")
+                    .logoutUrl("/api/v1/auth/logout")
+                    .logoutSuccessHandler((req, res, auth) -> res.setStatus(200))
                     .permitAll()
                 )
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
 
             return http.build();

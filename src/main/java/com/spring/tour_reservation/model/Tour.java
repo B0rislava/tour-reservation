@@ -13,6 +13,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -89,9 +90,16 @@ public class Tour {
 
     @Column(name = "meeting_point")
     private String meetingPoint;
+    
+    // OneToOne - one TOUR -> one TOUR_DETAILS
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "tour_details_id", referencedColumnName = "id")
+    private TourDetails tourDetails;
 
-    @Column(name = "image_url")
-    private String imageUrl;
+    // OneToMany - one TOUR -> many IMAGES
+    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<TourImage> tourImages = new HashSet<>();
 
     // ManyToMany - many TOURS -> many TAGS
     @ManyToMany(fetch = FetchType.LAZY)
