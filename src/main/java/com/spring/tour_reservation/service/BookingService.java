@@ -55,6 +55,22 @@ public class BookingService {
         mapToDto(savedBooking);
     }
 
+    @Transactional
+    public void cancelBooking(Long bookingId, Long userId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        if (!booking.getUser().getId().equals(userId)) {
+            throw new RuntimeException("You are not authorized to cancel this booking!");
+        }
+
+        Tour tour = booking.getTour();
+        tour.setAvailableSpots(tour.getAvailableSpots() + booking.getNumberOfParticipants());
+        tourRepository.save(tour);
+
+        bookingRepository.delete(booking);
+    }
+
     @Transactional(readOnly = true)
     public List<BookingDto> getBookingsForUser(Long userId) {
         return bookingRepository.findByUserId(userId)

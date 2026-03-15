@@ -45,4 +45,20 @@ public class BookingController {
             return "redirect:/tours/" + tourId;
         }
     }
+
+    @PostMapping("/cancel")
+    public String cancelBooking(@RequestParam Long bookingId,
+                                Principal principal,
+                                RedirectAttributes redirectAttributes) {
+        User user = userRepository.findByEmail(principal.getName()).orElseThrow();
+
+        try {
+            bookingService.cancelBooking(bookingId, user.getId());
+            redirectAttributes.addAttribute("cancelled", "true");
+        } catch (Exception e) {
+            redirectAttributes.addAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/bookings";
+    }
 }

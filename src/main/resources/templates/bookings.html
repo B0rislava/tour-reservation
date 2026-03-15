@@ -41,8 +41,20 @@
 
         <!-- Display success message after booking -->
         <div th:if="${param.success}"
-            style="background: #e0f8e9; color: #2e7d32; padding: 1rem; border-radius: 12px; margin-bottom: 2rem; font-weight: 500;">
+             style="background: #e0f8e9; color: #2e7d32; padding: 1rem; border-radius: 12px; margin-bottom: 2rem; font-weight: 500;">
             Booking confirmed successfully!
+        </div>
+
+        <!-- Display success message after cancellation -->
+        <div th:if="${param.cancelled}"
+             style="background: #F0F7FF; color: #4589D6; padding: 1rem; border-radius: 12px; margin-bottom: 2rem; font-weight: 500;">
+            Booking successfully cancelled.
+        </div>
+
+        <!-- Display error message -->
+        <div th:if="${param.error}"
+             style="background: #FFF0F0; color: #D64545; padding: 1rem; border-radius: 12px; margin-bottom: 2rem; font-weight: 500;">
+            <span th:text="${param.error}"></span>
         </div>
 
         <div class="booking-list">
@@ -65,7 +77,10 @@
                 </div>
                 <div class="booking-actions" style="display: flex; gap: 1rem; align-items: center;">
                     <span class="booking-status" th:text="${booking.status}">CONFIRMED</span>
-                    <button class="btn-secondary">Cancel</button>
+                    <form th:action="@{/bookings/cancel}" method="post" onsubmit="return confirm('Are you sure you want to cancel this booking? This action cannot be undone.');" style="margin: 0;">
+                        <input type="hidden" name="bookingId" th:value="${booking.id}">
+                        <button type="submit" class="btn-secondary">Cancel</button>
+                    </form>
                 </div>
             </div>
         </div>
