@@ -80,14 +80,6 @@ public class Tour {
     @Builder.Default
     private String status = "ACTIVE";
 
-    @Column(name = "rating")
-    @Builder.Default
-    private Double rating = 0.0;
-
-    @Column(name = "reviews_count")
-    @Builder.Default
-    private Integer reviewsCount = 0;
-
     @Column(name = "meeting_point")
     private String meetingPoint;
     
