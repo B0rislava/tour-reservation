@@ -8,9 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.spring.tour_reservation.dto.BookingRequestDto;
 
 import java.security.Principal;
 import java.util.List;
@@ -32,14 +33,13 @@ public class BookingController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createBooking(@RequestParam Long tourId, 
-                                           @RequestParam int participants,
+    public ResponseEntity<?> createBooking(@RequestBody BookingRequestDto request, 
                                            Principal principal) {
         if (principal == null) return ResponseEntity.status(401).build();                                    
         User user = userRepository.findByEmail(principal.getName()).orElseThrow();
         
         try {
-            bookingService.bookTour(user.getId(), tourId, participants);
+            bookingService.bookTour(user.getId(), request.getTourId(), request.getParticipants());
             return ResponseEntity.ok(Map.of("message", "Booking confirmed successfully!"));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
@@ -47,10 +47,11 @@ public class BookingController {
     }
 
     @PostMapping("/cancel")
-    public ResponseEntity<?> cancelBooking(@RequestParam Long bookingId,
+    public ResponseEntity<?> cancelBooking(@RequestBody Map<String, Long> request,
                                            Principal principal) {
         if (principal == null) return ResponseEntity.status(401).build();
         User user = userRepository.findByEmail(principal.getName()).orElseThrow();
+        Long bookingId = request.get("bookingId");
 
         try {
             bookingService.cancelBooking(bookingId, user.getId());

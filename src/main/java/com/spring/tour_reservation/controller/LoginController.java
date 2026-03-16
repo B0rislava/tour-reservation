@@ -1,13 +1,14 @@
 package com.spring.tour_reservation.controller;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+import java.util.Map;
 
-@Controller
+@RestController
 public class LoginController {
 
-    @GetMapping("/login")
-    public String login() {
-        return "login";
+    @GetMapping("/api/v1/auth/status")
+    public Map<String, String> status() {
+        return Map.of("status", "API is running");
     }
 }
