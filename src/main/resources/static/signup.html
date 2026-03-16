@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Tourly</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="login-layout">
+    <div class="login-card" style="max-width: 480px;">
+        <a href="/" class="login-logo">Tourly</a>
+        <h2 class="login-title">Create Account</h2>
+        <p class="login-subtitle">Join us and start exploring the world</p>
+
+        <!-- Error message -->
+        <div id="error-message" class="alert-error" style="display: none;"></div>
+
+        <form id="signup-form">
+            <div style="display: flex; gap: 1rem;">
+                <div class="form-group" style="text-align: left; flex: 1;">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" name="firstName" class="form-control" placeholder="John" required>
+                </div>
+                <div class="form-group" style="text-align: left; flex: 1;">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Doe" required>
+                </div>
+            </div>
+            
+            <div class="form-group" style="text-align: left;">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" class="form-control" placeholder="name@example.com" required>
+            </div>
+            
+            <div class="form-group" style="text-align: left;">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Create a password" required>
+            </div>
+            
+            <div class="form-group" style="text-align: left;">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Repeat your password" required>
+            </div>
+            
+            <button type="submit" class="btn-book btn-block" style="margin-top: 1rem; padding: 1rem;">Sign Up</button>
+        </form>
+
+        <p style="margin-top: 1.2rem; color: var(--text-secondary); font-size: 0.9rem;">
+            Already have an account? <a href="/login.html"
+                style="color: var(--accent); font-weight: 600; text-decoration: none;">Sign In</a>
+        </p>
+    </div>
+
+    <script>
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.style.display = 'none';
+
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            if (data.password !== data.confirmPassword) {
+                errorDiv.textContent = 'Passwords do not match!';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/v1/auth/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    // Redirect to login on success
+                    window.location.href = '/login.html?registered=true';
+                } else {
+                    const errorData = await response.json();
+                    errorDiv.textContent = errorData.error || 'Registration failed.';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (err) {
+                errorDiv.textContent = 'A network error occurred.';
+                errorDiv.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

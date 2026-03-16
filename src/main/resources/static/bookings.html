@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings | Tourly</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="/js/app.js" defer></script>
+</head>
+<body>
+    <!-- Top Menu -->
+    <header class="navbar"></header>
+
+    <main class="container">
+        <h1 class="page-title">My Bookings</h1>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">Manage your upcoming and past trips.</p>
+
+        <!-- Dynamic Messages Container -->
+        <div id="message-container"></div>
+
+        <div class="booking-list" id="bookings-container">
+            <div id="loading" style="text-align: center; padding: 3rem; color: var(--text-secondary);">Loading bookings...</div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initNav('bookings');
+            fetchBookings();
+        });
+
+        async function fetchBookings() {
+            try {
+                const response = await fetch('/api/v1/bookings');
+                if (response.status === 401) {
+                    window.location.href = '/login.html';
+                    return;
+                }
+                if (response.ok) {
+                    const bookings = await response.json();
+                    renderBookings(bookings);
+                } else {
+                    showMessage('Failed to load bookings.', 'error');
+                }
+            } catch (e) {
+                showMessage('A network error occurred.', 'error');
+            }
+        }
+
+        function renderBookings(bookings) {
+            const container = document.getElementById('bookings-container');
+            
+            if (!bookings || bookings.length === 0) {
+                container.innerHTML = `
+                <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+                    You haven't booked any tours yet.
+                </div>`;
+                return;
+            }
+
+            let html = '';
+            bookings.forEach(booking => {
+                const date = new Date(booking.bookingDate).toLocaleString();
+                html += `
+                <div class="booking-item">
+                    <div class="booking-info">
+                        <h3><a href="/tour-details.html?id=${booking.tourId}" style="text-decoration: none; color: inherit;">${booking.tourTitle}</a></h3>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
+                            <span>📅 Booked on: <span>${date}</span></span> | 
+                            <span>👥 Persons: <span>${booking.numberOfParticipants}</span></span>
+                        </div>
+                    </div>
+                    <div class="booking-actions" style="display: flex; gap: 1rem; align-items: center;">
+                        <span class="booking-status">${booking.status}</span>
+                        <div style="margin: 0;">
+                            <button class="btn-secondary" onclick="cancelBooking(${booking.id})">Cancel</button>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        async function cancelBooking(bookingId) {
+            if (!confirm('Are you sure you want to cancel this booking? This action cannot be undone.')) return;
+            
+            try {
+                const formData = new URLSearchParams();
+                formData.append('bookingId', bookingId);
+
+                const response = await fetch('/api/v1/bookings/cancel', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ bookingId: bookingId })
+                });
+
+                if (response.ok) {
+                    const json = await response.json();
+                    showMessage(json.message || 'Booking successfully cancelled.', 'success');
+                    fetchBookings(); // reload
+                } else {
+                    const json = await response.json();
+                    showMessage(json.error || 'Failed to cancel.', 'error');
+                }
+            } catch (e) {
+                showMessage('Network error during cancellation.', 'error');
+            }
+        }
+
+        function showMessage(text, type) {
+            const container = document.getElementById('message-container');
+            const bgClass = type === 'success' ? '#F0F7FF' : '#FFF0F0';
+            const colorClass = type === 'success' ? '#4589D6' : '#D64545';
+            
+            container.innerHTML = `
+                <div style="background: ${bgClass}; color: ${colorClass}; padding: 1rem; border-radius: 12px; margin-bottom: 2rem; font-weight: 500;">
+                    ${text}
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tourly | Discover</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="/js/app.js" defer></script>
+</head>
+<body>
+    <header class="navbar"></header>
+
+    <main class="container">
+        <section class="tours-grid" id="tours-container">
+            <div class="warning-empty" style="display: none;" id="empty-warning">
+                Oops! There are no tours available right now.
+            </div>
+            <!-- Tour cards will be dynamically injected here -->
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initNav('discover');
+            fetchTours();
+        });
+
+        async function fetchTours() {
+            try {
+                const response = await fetch('/api/v1/tours');
+                if (response.ok) {
+                    const tours = await response.json();
+                    renderTours(tours);
+                } else {
+                    console.error('Failed to load tours');
+                }
+            } catch (error) {
+                console.error('Error fetching tours:', error);
+            }
+        }
+
+        function renderTours(tours) {
+            const container = document.getElementById('tours-container');
+            const emptyWarning = document.getElementById('empty-warning');
+
+            if (!tours || tours.length === 0) {
+                emptyWarning.style.display = 'block';
+                return;
+            }
+
+            let html = '';
+            tours.forEach(tour => {
+                const guideInitial = tour.guideName ? tour.guideName.charAt(0).toUpperCase() : 'G';
+                const rating = tour.rating === 0.0 ? '0.0' : tour.rating;
+                
+                html += `
+                <article class="tour-card">
+                    <div class="card-image-wrapper">
+                        <img src="${tour.imageUrl || 'https://via.placeholder.com/400x200'}" alt="${tour.title}" class="tour-image" />
+                        <div class="heart-icon">🤍</div>
+                    </div>
+                    <div class="card-content">
+                        <div class="title-row">
+                            <h2 class="tour-title">
+                                <a href="/tour-details.html?id=${tour.id}" style="text-decoration: none; color: inherit;">
+                                    ${tour.title}
+                                </a>
+                            </h2>
+                            <div class="rating-badge">
+                                <span class="star">★</span> <span>${rating}</span> 
+                                <span class="review-count">(${tour.reviewsCount || 0})</span>
+                            </div>
+                        </div>
+
+                        <div class="tour-details">
+                            <div class="detail-item">
+                                <span class="icon">📍</span> <span>${tour.location}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="icon">⏱</span> <span>${tour.duration}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="icon">👥</span> Places: <span>${tour.availableSpots}</span> / <span>${tour.maxGroupSize}</span>
+                            </div>
+                        </div>
+
+                        <div class="guide-box">
+                            <div class="guide-avatar-wrapper">
+                                <span class="guide-letter">${guideInitial}</span>
+                            </div>
+                            <div class="guide-info">
+                                <div class="guide-name">${tour.guideName}</div>
+                                <div class="guide-rating"><span class="star">★</span> 5.0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="price-container">
+                            <div class="price-amount">€<span>${tour.pricePerPerson}</span></div>
+                            <div class="price-label">/person</div>
+                        </div>
+                        <a href="/tour-details.html?id=${tour.id}" class="btn-book">Book Now</a>
+                    </div>
+                </article>
+                `;
+            });
+            container.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

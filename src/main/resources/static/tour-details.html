@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tour Details | Tourly</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="/js/app.js" defer></script>
+</head>
+<body>
+    <!-- Top Menu -->
+    <header class="navbar"></header>
+
+    <main class="container">
+        <div id="loading" style="text-align: center; padding: 2rem; color: var(--text-secondary);">Loading tour details...</div>
+        <div id="error-message" style="color: #ff6b6b; text-align: center; display: none;">Error loading tour details.</div>
+        
+        <div class="details-container" id="details-container" style="display: none;">
+            <!-- Left Side: Images, Info, Guide -->
+            <div class="details-content">
+                <img id="tour-image" src="" alt="Tour Image" class="details-hero-img">
+
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <h1 class="details-title" id="tour-title" style="margin-bottom: 0;"></h1>
+                    <div class="rating-badge" style="padding: 0.5rem 0.8rem; font-size: 1rem;">
+                        <span class="star">★</span> <span id="tour-rating">0.0</span>
+                        <span class="review-count">(<span id="tour-reviews">0</span>)</span>
+                    </div>
+                </div>
+
+                <div class="tour-details" style="margin-bottom: 2rem;">
+                    <div class="detail-item">
+                        <span class="icon">📍</span> <span id="tour-location"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="icon">⏱</span> <span id="tour-duration"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="icon">👥</span> Places: <span id="tour-available"></span> / <span id="tour-max"></span>
+                    </div>
+                </div>
+
+                <h3>About this tour</h3>
+                <p id="tour-description" style="color: var(--text-secondary); margin-top: 1rem; margin-bottom: 2rem; line-height: 1.8;"></p>
+
+                <h3>Your guide</h3>
+                <div class="guide-box" style="margin-top: 1rem; max-width: 400px;">
+                    <div class="guide-avatar-wrapper">
+                        <span class="guide-letter" id="guide-initial">G</span>
+                    </div>
+                    <div class="guide-info">
+                        <div class="guide-name" id="guide-name"></div>
+                        <div class="guide-rating"><span class="star">★</span> 5.0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Booking Widget -->
+            <div class="details-sidebar">
+                <div class="booking-widget">
+                    <div class="price-container" style="margin-bottom: 1.5rem;">
+                        <div class="price-amount">€<span id="tour-price"></span></div>
+                        <div class="price-label">/person</div>
+                    </div>
+
+                    <!-- Dynamic message container -->
+                    <div id="booking-msg" style="display: none; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; font-weight: 500;"></div>
+
+                    <div id="booking-form-container"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentTourId = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            initNav('discover');
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            currentTourId = urlParams.get('id');
+
+            if (!currentTourId) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error-message').textContent = 'Tour not found.';
+                document.getElementById('error-message').style.display = 'block';
+                return;
+            }
+
+            fetchTourDetails();
+        });
+
+        async function fetchTourDetails() {
+            try {
+                const response = await fetch(`/api/v1/tours/${currentTourId}`);
+                if (response.ok) {
+                    const tour = await response.json();
+                    renderTourDetails(tour);
+                } else {
+                    throw new Error('Failed to load tour');
+                }
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error-message').style.display = 'block';
+            }
+        }
+
+        async function renderTourDetails(tour) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('details-container').style.display = 'flex';
+
+            document.getElementById('tour-image').src = tour.imageUrl || 'https://via.placeholder.com/800x400';
+            document.getElementById('tour-title').textContent = tour.title;
+            document.getElementById('tour-rating').textContent = tour.rating === 0.0 ? '0.0' : tour.rating;
+            document.getElementById('tour-reviews').textContent = tour.reviewsCount || 0;
+            document.getElementById('tour-location').textContent = tour.location;
+            document.getElementById('tour-duration').textContent = tour.duration;
+            document.getElementById('tour-available').textContent = tour.availableSpots;
+            document.getElementById('tour-max').textContent = tour.maxGroupSize;
+            document.getElementById('tour-description').textContent = tour.description;
+            
+            document.getElementById('guide-name').textContent = tour.guideName;
+            document.getElementById('guide-initial').textContent = tour.guideName ? tour.guideName.charAt(0).toUpperCase() : 'G';
+            document.getElementById('tour-price').textContent = tour.pricePerPerson;
+
+            // Render right side widget based on authentication
+            const { isAuthenticated } = await checkAuth();
+            const widgetContainer = document.getElementById('booking-form-container');
+
+            if (isAuthenticated) {
+                widgetContainer.innerHTML = `
+                    <form id="booking-form">
+                        <div class="form-group">
+                            <label for="participants">Participants</label>
+                            <select class="form-control" name="participants" id="participants">
+                                <option value="1">1 Person</option>
+                                <option value="2">2 Persons</option>
+                                <option value="3">3 Persons</option>
+                                <option value="4">4 Persons</option>
+                                <option value="5">5 Persons</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-book btn-block">Confirm Booking</button>
+                    </form>
+                `;
+
+                document.getElementById('booking-form').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const participants = document.getElementById('participants').value;
+                    try {
+                        const res = await fetch('/api/v1/bookings/create', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({ 
+                                tourId: parseInt(currentTourId), 
+                                participants: parseInt(participants) 
+                            })
+                        });
+
+                        const msgDiv = document.getElementById('booking-msg');
+                        const data = await res.json();
+                        msgDiv.style.display = 'block';
+
+                        if (res.ok) {
+                            msgDiv.style.background = '#e0f8e9';
+                            msgDiv.style.color = '#2e7d32';
+                            msgDiv.textContent = data.message || 'Booking successful!';
+                            
+                            // Re-fetch tour details to display updated available capacity
+                            fetchTourDetails();
+                        } else {
+                            msgDiv.style.background = '#FFF0F0';
+                            msgDiv.style.color = '#ff6b6b';
+                            msgDiv.textContent = data.error || 'Booking failed.';
+                        }
+                    } catch (err) {
+                        console.error('Booking err:', err);
+                    }
+                });
+            } else {
+                widgetContainer.innerHTML = `
+                    <a href="/login.html" class="btn-book btn-block" style="display:block; text-align:center; text-decoration:none; padding: 1rem;">
+                        Login to Book
+                    </a>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
