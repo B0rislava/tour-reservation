@@ -9,8 +9,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.CascadeType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -52,7 +50,4 @@ public class Booking {
     @Builder.Default
     private String status = "CONFIRMED";
 
-    // OneToOne - one BOOKING -> one REVIEW
-    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
-    private Review review;
 }

@@ -1,12 +1,11 @@
 package com.spring.tour_reservation;
 
 import com.spring.tour_reservation.model.Booking;
-import com.spring.tour_reservation.model.Review;
 import com.spring.tour_reservation.model.Tour;
+import com.spring.tour_reservation.model.TourImage;
 import com.spring.tour_reservation.model.User;
 import com.spring.tour_reservation.model.UserRole;
 import com.spring.tour_reservation.repository.BookingRepository;
-import com.spring.tour_reservation.repository.ReviewRepository;
 import com.spring.tour_reservation.repository.TourRepository;
 import com.spring.tour_reservation.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,6 @@ public class DataInitializer implements CommandLineRunner {
     private final UserRepository userRepository;
     private final TourRepository tourRepository;
     private final BookingRepository bookingRepository;
-    private final ReviewRepository reviewRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -65,8 +63,14 @@ public class DataInitializer implements CommandLineRunner {
                     .pricePerPerson(45.0)
                     .scheduledDate(LocalDate.now().plusDays(5))
                     .startTime(LocalTime.of(8, 0))
-                    .imageUrl("https://freesofiatour.com/wp-content/uploads/2018/05/seven-rila-lakes-how-to-get-to-1200x675.jpeg") 
                     .build();
+
+            rilaTour.getTourImages().add(TourImage.builder()
+                    .tour(rilaTour)
+                    .fileName("rila-lakes.jpg")
+                    .fileType("image/jpeg")
+                    .content("https://freesofiatour.com/wp-content/uploads/2018/05/seven-rila-lakes-how-to-get-to-1200x675.jpeg")
+                    .build());
 
             Tour varnaTour = Tour.builder()
                     .guide(guide)
@@ -79,8 +83,14 @@ public class DataInitializer implements CommandLineRunner {
                     .pricePerPerson(120.0)
                     .scheduledDate(LocalDate.now().plusWeeks(2))
                     .startTime(LocalTime.of(9, 30))
-                    .imageUrl("https://seadream.com/images/ports/Varna,%20Bulgaria.jpeg") 
                     .build();
+
+            varnaTour.getTourImages().add(TourImage.builder()
+                    .tour(varnaTour)
+                    .fileName("varna.jpg")
+                    .fileType("image/jpeg")
+                    .content("https://seadream.com/images/ports/Varna,%20Bulgaria.jpeg")
+                    .build());
 
             tourRepository.save(rilaTour);
             tourRepository.save(varnaTour);
@@ -99,18 +109,7 @@ public class DataInitializer implements CommandLineRunner {
             rilaTour.setAvailableSpots(rilaTour.getAvailableSpots() - 2);
             tourRepository.save(rilaTour);
 
-            // Add sample review
-            Review review1 = Review.builder()
-                    .booking(booking1)
-                    .tour(rilaTour)
-                    .reviewer(traveler)
-                    .tourRating(5)
-                    .comment("Absolutely stunning! The guide Ivan was very helpful.")
-                    .createdAt(LocalDateTime.now().minusDays(1))
-                    .build();
-            reviewRepository.save(review1);
-
-            System.out.println("DB is initialized with tours, bookings and reviews.");
+            System.out.println("DB is initialized with tours and bookings.");
         }
     }
 }

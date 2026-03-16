@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.spring.tour_reservation.mapper.BookingMapper;
+
 @Service
 @RequiredArgsConstructor
 public class BookingService {
@@ -22,6 +24,7 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final TourRepository tourRepository;
     private final UserRepository userRepository;
+    private final BookingMapper bookingMapper;
 
     @Transactional
     public void bookTour(Long userId, Long tourId, int participants) {
@@ -50,9 +53,7 @@ public class BookingService {
                 .status("CONFIRMED")
                 .build();
 
-        Booking savedBooking = bookingRepository.save(booking);
-
-        mapToDto(savedBooking);
+        bookingRepository.save(booking);
     }
 
     @Transactional
@@ -75,21 +76,7 @@ public class BookingService {
     public List<BookingDto> getBookingsForUser(Long userId) {
         return bookingRepository.findByUserId(userId)
                 .stream()
-                .map(this::mapToDto)
+                .map(bookingMapper::toDto)
                 .collect(Collectors.toList());
-    }
-
-    private BookingDto mapToDto(Booking booking) {
-        return BookingDto.builder()
-                .id(booking.getId())
-                .userId(booking.getUser().getId())
-                .userName(booking.getUser().getFirstName() + " " + booking.getUser().getLastName())
-                .tourId(booking.getTour().getId())
-                .tourTitle(booking.getTour().getTitle())
-                .numberOfParticipants(booking.getNumberOfParticipants())
-                .bookingDate(booking.getBookingDate())
-                .status(booking.getStatus())
-                .hasReview(booking.getReview() != null)
-                .build();
     }
 }

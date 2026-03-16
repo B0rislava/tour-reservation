@@ -24,5 +24,4 @@ public class BookingDto {
     private LocalDateTime bookingDate;
     private String status;
     
-    private boolean hasReview; 
 }
