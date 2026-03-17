@@ -527,7 +527,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: calc(100vh - 80px);
+    min-height: calc(100vh - 80px);
+    padding: 2rem 5%;
 }
 
 .profile-card-compact {

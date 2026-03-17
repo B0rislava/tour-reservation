@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/css/styles.css">
     <script src="/js/app.js" defer></script>
 </head>
-<body class="profile-no-scroll">
+<body class="profile-layout">
     <!-- Top Menu -->
     <header class="navbar"></header>
 
@@ -19,10 +19,30 @@
             <p id="profile-email"></p>
             <p id="profile-bio" style="margin-top: 1rem; font-style: italic;"></p>
 
-            <div class="profile-actions">
-                <button class="btn-book">Edit Profile</button>
+            <div class="profile-actions" id="profile-actions">
+                <button class="btn-book" onclick="toggleEditForm()">Edit Profile</button>
                 <button class="btn-secondary" onclick="logout()" style="text-decoration: none;">Logout</button>
             </div>
+
+            <!-- Edit Form -->
+            <form id="edit-profile-form" style="display: none; margin-top: 1.5rem; text-align: left;">
+                <div class="form-group">
+                    <label for="edit-firstName">First Name</label>
+                    <input type="text" id="edit-firstName" required class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="edit-lastName">Last Name</label>
+                    <input type="text" id="edit-lastName" required class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="edit-bio">Bio</label>
+                    <textarea id="edit-bio" rows="3" class="form-control" style="resize: vertical;"></textarea>
+                </div>
+                <div class="profile-actions" style="margin-top: 1.5rem;">
+                    <button type="submit" class="btn-book" style="border: none; font-family: inherit;">Save Changes</button>
+                    <button type="button" class="btn-secondary" onclick="toggleEditForm()">Cancel</button>
+                </div>
+            </form>
         </div>
         
         <div id="loading" style="text-align: center; margin-top: 2rem;">Loading profile...</div>
@@ -44,6 +64,11 @@
                     
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('profile-card').style.display = 'block';
+
+                    // Populate edit form
+                    document.getElementById('edit-firstName').value = user.firstName;
+                    document.getElementById('edit-lastName').value = user.lastName;
+                    document.getElementById('edit-bio').value = user.bio || '';
                 } else {
                     throw new Error('Unauthorized');
                 }
@@ -51,6 +76,57 @@
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('error-msg').style.display = 'block';
                 setTimeout(() => window.location.href = '/login.html', 2000);
+            }
+        });
+
+        function toggleEditForm() {
+            const form = document.getElementById('edit-profile-form');
+            const actions = document.getElementById('profile-actions');
+            
+            if (form.style.display === 'none') {
+                form.style.display = 'block';
+                actions.style.display = 'none';
+            } else {
+                form.style.display = 'none';
+                actions.style.display = 'flex';
+            }
+        }
+
+        document.getElementById('edit-profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.textContent = 'Saving...';
+            btn.disabled = true;
+
+            const dto = {
+                firstName: document.getElementById('edit-firstName').value,
+                lastName: document.getElementById('edit-lastName').value,
+                bio: document.getElementById('edit-bio').value
+            };
+
+            try {
+                const response = await fetch('/api/v1/users/profile', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dto)
+                });
+                
+                if (response.ok) {
+                    const updatedUser = await response.json();
+                    document.getElementById('profile-initial').textContent = updatedUser.firstName.charAt(0).toUpperCase();
+                    document.getElementById('profile-name').textContent = `${updatedUser.firstName} ${updatedUser.lastName}`;
+                    document.getElementById('profile-bio').textContent = updatedUser.bio || 'User bio goes here...';
+                    
+                    toggleEditForm();
+                } else {
+                    alert('Failed to update profile.');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('An error occurred while updating the profile.');
+            } finally {
+                btn.textContent = 'Save Changes';
+                btn.disabled = false;
             }
         });
 

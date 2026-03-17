@@ -47,4 +47,23 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return userMapper.toDto(user);
     }
+
+    @Transactional
+    public UserDto updateUserProfile(String email, com.spring.tour_reservation.dto.UserUpdateRequestDto request) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        if (request.getFirstName() != null && !request.getFirstName().trim().isEmpty()) {
+            user.setFirstName(request.getFirstName().trim());
+        }
+        if (request.getLastName() != null && !request.getLastName().trim().isEmpty()) {
+            user.setLastName(request.getLastName().trim());
+        }
+        if (request.getBio() != null) {
+            user.setBio(request.getBio().trim());
+        }
+        
+        userRepository.save(user);
+        return userMapper.toDto(user);
+    }
 }
