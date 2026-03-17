@@ -17,7 +17,9 @@ import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,6 +40,8 @@ public class Tour {
     private Long id;
 
     // ManyToOne - many TOURS -> one USER
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "guide_id", nullable = false)
     private User guide;
@@ -84,16 +88,22 @@ public class Tour {
     private String meetingPoint;
     
     // OneToOne - one TOUR -> one TOUR_DETAILS
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "tour_details_id", referencedColumnName = "id")
     private TourDetails tourDetails;
 
     // OneToMany - one TOUR -> many IMAGES
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private Set<TourImage> tourImages = new HashSet<>();
 
     // ManyToMany - many TOURS -> many TAGS
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "tour_tags",
@@ -104,6 +114,8 @@ public class Tour {
     private Set<Tag> tags = new HashSet<>();
 
     // OneToMany - one TOUR -> many BOOKINGS
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private Set<Booking> bookings = new HashSet<>();
