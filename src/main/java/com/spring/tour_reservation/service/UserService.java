@@ -77,6 +77,13 @@ public class UserService {
     }
 
     @Transactional
+    public void deleteUser(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        userRepository.delete(user);
+    }
+
+    @Transactional
     public void addSavedTour(String email, Long tourId) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));

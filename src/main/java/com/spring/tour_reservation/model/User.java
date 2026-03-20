@@ -73,6 +73,12 @@ public class User {
     @Builder.Default
     private Set<Tour> guidedTours = new HashSet<>();
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<Booking> bookings = new HashSet<>();
+
     // ManyToMany - a user can book many tours
     @EqualsAndHashCode.Exclude
     @ToString.Exclude

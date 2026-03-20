@@ -43,6 +43,15 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
+    @DeleteMapping("/profile")
+    public ResponseEntity<Void> deleteProfile(Principal principal) {
+        if (principal == null) {
+            return ResponseEntity.status(401).build();
+        }
+        userService.deleteUser(principal.getName());
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/favorites/{tourId}")
     public ResponseEntity<Void> addFavoriteTour(@PathVariable Long tourId, Principal principal) {
         if (principal == null) {

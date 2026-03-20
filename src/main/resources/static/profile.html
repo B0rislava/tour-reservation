@@ -23,6 +23,9 @@
                 <button class="btn-book" onclick="toggleEditForm()">Edit Profile</button>
                 <button class="btn-secondary" onclick="logout()" style="text-decoration: none;">Logout</button>
             </div>
+            <div id="delete-action-container" style="margin-top: 1.5rem;">
+                <button class="btn-secondary" onclick="deleteProfile()" style="color: #D64545; border-color: #D64545; width: 100%;">Delete Account</button>
+            </div>
 
             <!-- Edit Form -->
             <form id="edit-profile-form" style="display: none; margin-top: 1.5rem; text-align: left;">
@@ -82,13 +85,16 @@
         function toggleEditForm() {
             const form = document.getElementById('edit-profile-form');
             const actions = document.getElementById('profile-actions');
+            const deleteAction = document.getElementById('delete-action-container');
             
             if (form.style.display === 'none') {
                 form.style.display = 'block';
                 actions.style.display = 'none';
+                deleteAction.style.display = 'none';
             } else {
                 form.style.display = 'none';
                 actions.style.display = 'flex';
+                deleteAction.style.display = 'block';
             }
         }
 
@@ -129,6 +135,26 @@
                 btn.disabled = false;
             }
         });
+
+        async function deleteProfile() {
+            if (!confirm('Are you sure? This will permanently delete your account, bookings, and tours.')) return;
+            
+            try {
+                const response = await fetch('/api/v1/users/profile', {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    alert('Goodbye! Your profile has been deleted.');
+                    window.location.href = '/signup.html';
+                } else {
+                    alert('Failed to delete profile.');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('An error occurred.');
+            }
+        }
 
         async function logout() {
             if (!confirm('Are you sure you want to logout?')) return;
