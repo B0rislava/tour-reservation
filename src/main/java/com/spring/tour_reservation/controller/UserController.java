@@ -18,14 +18,19 @@ import com.spring.tour_reservation.dto.TourDto;
 import java.util.List;
 import java.security.Principal;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
+@Tag(name = "Users", description = "Operations related to user profiles and favorites")
 public class UserController {
 
     private final UserService userService;
 
     @GetMapping("/profile")
+    @Operation(summary = "Get the authenticated user's profile details")
     public ResponseEntity<UserDto> profile(Principal principal) {
         if (principal == null) {
             return ResponseEntity.status(401).build();
@@ -35,6 +40,7 @@ public class UserController {
     }
 
     @PutMapping("/profile")
+    @Operation(summary = "Update the authenticated user's profile")
     public ResponseEntity<UserDto> updateProfile(@RequestBody UserUpdateRequestDto request, Principal principal) {
         if (principal == null) {
             return ResponseEntity.status(401).build();
@@ -44,6 +50,7 @@ public class UserController {
     }
 
     @DeleteMapping("/profile")
+    @Operation(summary = "Delete the authenticated user's account")
     public ResponseEntity<Void> deleteProfile(Principal principal) {
         if (principal == null) {
             return ResponseEntity.status(401).build();
@@ -53,6 +60,7 @@ public class UserController {
     }
 
     @PostMapping("/favorites/{tourId}")
+    @Operation(summary = "Add a tour to user's favorites")
     public ResponseEntity<Void> addFavoriteTour(@PathVariable Long tourId, Principal principal) {
         if (principal == null) {
             return ResponseEntity.status(401).build();
@@ -62,6 +70,7 @@ public class UserController {
     }
 
     @DeleteMapping("/favorites/{tourId}")
+    @Operation(summary = "Remove a tour from user's favorites")
     public ResponseEntity<Void> removeFavoriteTour(@PathVariable Long tourId, Principal principal) {
         if (principal == null) {
             return ResponseEntity.status(401).build();
@@ -71,6 +80,7 @@ public class UserController {
     }
 
     @GetMapping("/favorites")
+    @Operation(summary = "Get all favorite tours for the user")
     public ResponseEntity<List<TourDto>> getFavoriteTours(Principal principal) {
         if (principal == null) {
             return ResponseEntity.status(401).build();

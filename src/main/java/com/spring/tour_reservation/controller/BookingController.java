@@ -17,15 +17,20 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/v1/bookings")
 @RequiredArgsConstructor
+@Tag(name = "Bookings", description = "Operations related to tour bookings")
 public class BookingController {
 
     private final BookingService bookingService;
     private final UserRepository userRepository;
 
     @GetMapping
+    @Operation(summary = "List all bookings for the authenticated user")
     public ResponseEntity<List<BookingDto>> listBookings(Principal principal) {
         if (principal == null) return ResponseEntity.status(401).build();
         User user = userRepository.findByEmail(principal.getName()).orElseThrow();
@@ -33,6 +38,7 @@ public class BookingController {
     }
 
     @PostMapping("/create")
+    @Operation(summary = "Create a new booking for a tour")
     public ResponseEntity<?> createBooking(@RequestBody BookingRequestDto request, 
                                            Principal principal) {
         if (principal == null) return ResponseEntity.status(401).build();                                    
@@ -47,6 +53,7 @@ public class BookingController {
     }
 
     @PostMapping("/cancel")
+    @Operation(summary = "Cancel an existing booking")
     public ResponseEntity<?> cancelBooking(@RequestBody Map<String, Long> request,
                                            Principal principal) {
         if (principal == null) return ResponseEntity.status(401).build();
