@@ -37,6 +37,7 @@ dependencies {
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
 
 	// Database & Migrations
+	runtimeOnly("org.postgresql:postgresql")
 	runtimeOnly("com.h2database:h2")
 	implementation("org.liquibase:liquibase-core")
 

@@ -1,11 +1,9 @@
 package com.spring.tour_reservation;
 
-import com.spring.tour_reservation.model.Booking;
 import com.spring.tour_reservation.model.Tour;
 import com.spring.tour_reservation.model.TourImage;
 import com.spring.tour_reservation.model.User;
 import com.spring.tour_reservation.model.UserRole;
-import com.spring.tour_reservation.repository.BookingRepository;
 import com.spring.tour_reservation.repository.TourRepository;
 import com.spring.tour_reservation.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Component
@@ -24,7 +21,6 @@ public class DataInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final TourRepository tourRepository;
-    private final BookingRepository bookingRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -43,14 +39,6 @@ public class DataInitializer implements CommandLineRunner {
                     .build();
             userRepository.save(guide);
 
-            User traveler = User.builder()
-                    .email("user@tourly.com")
-                    .firstName("Maria")
-                    .lastName("Georgieva")
-                    .password(passwordEncoder.encode("pass123"))
-                    .role(UserRole.TRAVELER)
-                    .build();
-            userRepository.save(traveler);
 
             Tour rilaTour = Tour.builder()
                     .guide(guide)
@@ -95,19 +83,6 @@ public class DataInitializer implements CommandLineRunner {
             tourRepository.save(rilaTour);
             tourRepository.save(varnaTour);
 
-            // Add sample bookings
-            Booking booking1 = Booking.builder()
-                    .user(traveler)
-                    .tour(rilaTour)
-                    .numberOfParticipants(2)
-                    .bookingDate(LocalDateTime.now().minusDays(2))
-                    .status("CONFIRMED")
-                    .build();
-            bookingRepository.save(booking1);
-            
-            // Adjust available spots manually for sample data
-            rilaTour.setAvailableSpots(rilaTour.getAvailableSpots() - 2);
-            tourRepository.save(rilaTour);
 
             System.out.println("DB is initialized with tours and bookings.");
         }

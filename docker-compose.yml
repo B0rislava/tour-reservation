@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: tourly-db
+    environment:
+      POSTGRES_DB: ${DB_NAME:-tour_reservation}
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    ports:
+      - "5432:5432"
+    volumes:
+      - tourly-data:/var/lib/postgresql/data
+
+volumes:
+  tourly-data:
