@@ -26,6 +26,7 @@ async function renderNav(activePage = '') {
         const initial = user.firstName ? user.firstName.charAt(0).toUpperCase() : 'U';
         navHtml += `
             <a href="/bookings.html" class="${activePage === 'bookings' ? 'active' : ''}">Bookings</a>
+            <a href="/favorites.html" class="${activePage === 'favorites' ? 'active' : ''}">Favorites</a>
             <a href="/profile.html" class="${activePage === 'profile' ? 'active' : ''}">
                 <div class="profile-pic">
                     <span>${initial}</span>
@@ -53,4 +54,51 @@ function initNav(activePage) {
         `;
     }
     renderNav(activePage);
+}
+
+async function getUserFavorites() {
+    try {
+        const response = await fetch('/api/v1/users/favorites');
+        if (response.ok) {
+            const tours = await response.json();
+            return tours.map(tour => tour.id);
+        }
+    } catch (e) {
+        console.error("Error fetching favorites", e);
+    }
+    return [];
+}
+
+async function toggleFavorite(tourId, iconElement) {
+    const isFavorited = iconElement.innerText.trim() === '❤️';
+    const method = isFavorited ? 'DELETE' : 'POST';
+
+    try {
+        const response = await fetch(`/api/v1/users/favorites/${tourId}`, {
+            method: method
+        });
+
+        if (response.ok) {
+            iconElement.innerText = isFavorited ? '🤍' : '❤️';
+
+            if (isFavorited && window.location.pathname.includes('favorites.html')) {
+                const card = iconElement.closest('.tour-card');
+                if (card) {
+                    card.remove();
+                    const container = document.getElementById('tours-container');
+                    const remainingCards = container.querySelectorAll('.tour-card');
+                    if (remainingCards.length === 0) {
+                        const emptyWarning = document.getElementById('empty-warning');
+                        if (emptyWarning) emptyWarning.style.display = 'block';
+                    }
+                }
+            }
+        } else if (response.status === 401) {
+            window.location.href = '/login.html';
+        } else {
+            console.error('Failed to toggle favorite');
+        }
+    } catch (e) {
+        console.error("Error toggling favorite", e);
+    }
 }

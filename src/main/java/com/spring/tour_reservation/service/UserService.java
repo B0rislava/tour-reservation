@@ -11,14 +11,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.tour_reservation.mapper.UserMapper;
+import com.spring.tour_reservation.mapper.TourMapper;
+import com.spring.tour_reservation.repository.TourRepository;
+import com.spring.tour_reservation.model.Tour;
+import com.spring.tour_reservation.dto.TourDto;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+    private final TourRepository tourRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final TourMapper tourMapper;
 
     @Transactional
     public void registerUser(RegistrationDto registrationDto) {
@@ -65,5 +74,45 @@ public class UserService {
         
         userRepository.save(user);
         return userMapper.toDto(user);
+    }
+
+    @Transactional
+    public void addSavedTour(String email, Long tourId) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Tour tour = tourRepository.findById(tourId)
+                .orElseThrow(() -> new RuntimeException("Tour not found"));
+
+        if (user.getSavedTours().contains(tour)) {
+            throw new RuntimeException("Tour is already saved");
+        }
+
+        user.getSavedTours().add(tour);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void removeSavedTour(String email, Long tourId) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Tour tour = tourRepository.findById(tourId)
+                .orElseThrow(() -> new RuntimeException("Tour not found"));
+
+        if (!user.getSavedTours().contains(tour)) {
+            throw new RuntimeException("Tour is not in saved list");
+        }
+
+        user.getSavedTours().remove(tour);
+        userRepository.save(user);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TourDto> getSavedTours(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        return user.getSavedTours().stream()
+                .map(tourMapper::toDto)
+                .collect(Collectors.toList());
     }
 }

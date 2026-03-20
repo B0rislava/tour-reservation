@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tourly | Discover</title>
+    <title>Tourly | Favorites</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/styles.css">
     <script src="/js/app.js" defer></script>
@@ -14,36 +14,37 @@
     <main class="container">
         <section class="tours-grid" id="tours-container">
             <div class="warning-empty" style="display: none;" id="empty-warning">
-                Oops! There are no tours available right now.
+                Oops! You have no favorite tours yet.
             </div>
-            <!-- Tour cards will be dynamically injected here -->
         </section>
     </main>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            initNav('discover');
-            fetchTours();
+            initNav('favorites');
+            fetchFavoriteTours();
         });
 
-        async function fetchTours() {
+        async function fetchFavoriteTours() {
             try {
-                const response = await fetch('/api/v1/tours');
+                const authRes = await checkAuth();
+                if (!authRes.isAuthenticated) {
+                    window.location.href = '/login.html';
+                    return;
+                }
+
+                const response = await fetch('/api/v1/users/favorites');
                 if (response.ok) {
                     const tours = await response.json();
-                    
-                    let favoriteIds = [];
-                    const authRes = await checkAuth();
-                    if (authRes.isAuthenticated) {
-                        favoriteIds = await getUserFavorites();
-                    }
-                    
+                    const favoriteIds = tours.map(t => t.id);
                     renderTours(tours, favoriteIds);
+                } else if (response.status === 401) {
+                    window.location.href = '/login.html';
                 } else {
-                    console.error('Failed to load tours');
+                    console.error('Failed to load favorite tours');
                 }
             } catch (error) {
-                console.error('Error fetching tours:', error);
+                console.error('Error fetching favorite tours:', error);
             }
         }
 
@@ -51,6 +52,7 @@
             const container = document.getElementById('tours-container');
             const emptyWarning = document.getElementById('empty-warning');
 
+            // Remove existing cards but keep the warning element
             container.querySelectorAll('.tour-card').forEach(card => card.remove());
 
             if (!tours || tours.length === 0) {
@@ -59,6 +61,7 @@
             }
 
             emptyWarning.style.display = 'none';
+
             let html = '';
             tours.forEach(tour => {
                 const guideInitial = tour.guideName ? tour.guideName.charAt(0).toUpperCase() : 'G';
@@ -67,7 +70,7 @@
                 const heartIcon = isFavorited ? '❤️' : '🤍';
                 
                 html += `
-                <article class="tour-card">
+                <article class="tour-card" id="tour-card-${tour.id}">
                     <div class="card-image-wrapper">
                         <img src="${tour.imageUrl || 'https://via.placeholder.com/400x200'}" alt="${tour.title}" class="tour-image" />
                         <div class="heart-icon" onclick="toggleFavorite(${tour.id}, this)" style="cursor:pointer; z-index:10; position:absolute; top:1rem; right:1rem;">${heartIcon}</div>
