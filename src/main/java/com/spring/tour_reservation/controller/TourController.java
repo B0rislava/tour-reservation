@@ -12,6 +12,9 @@ import com.spring.tour_reservation.dto.TourDto;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/v1/tours")
@@ -31,5 +34,19 @@ public class TourController {
     @Operation(summary = "Get specific tour details by ID")
     public ResponseEntity<TourDto> getTourDetails(@PathVariable Long id) {
         return ResponseEntity.ok(tourService.getTourById(id));
+    }
+
+    @GetMapping("/guide/me")
+    @Operation(summary = "Get tours created by the authenticated guide")
+    public ResponseEntity<List<TourDto>> getMyTours(Principal principal) {
+        if (principal == null) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok(tourService.getToursByGuideEmail(principal.getName()));
+    }
+
+    @PostMapping("/guide/me")
+    @Operation(summary = "Create a new tour (Guides only)")
+    public ResponseEntity<Long> createTour(@RequestBody TourDto tourDto, Principal principal) {
+        if (principal == null) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok(tourService.createTour(tourDto, principal.getName()));
     }
 }
