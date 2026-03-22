@@ -111,7 +111,7 @@
             document.getElementById('loading').style.display = 'none';
             document.getElementById('details-container').style.display = 'flex';
 
-            document.getElementById('tour-image').src = tour.imageUrl || 'https://via.placeholder.com/800x400';
+            document.getElementById('tour-image').src = tour.imageUrl || 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=1200';
             document.getElementById('tour-title').textContent = tour.title;
             document.getElementById('tour-rating').textContent = tour.rating === 0.0 ? '0.0' : tour.rating;
             document.getElementById('tour-reviews').textContent = tour.reviewsCount || 0;

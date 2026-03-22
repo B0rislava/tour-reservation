@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Tours | Tourly</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="/js/app.js" defer></script>
+</head>
+
+<body class="bookings-layout" style="background-color: #F8F9FA;">
+    <header class="navbar"></header>
+
+    <main class="container">
+        <div class="page-header" style="text-align: center; margin-bottom: 3rem;">
+            <h1 style="font-size: 2.5rem; color: var(--text-primary);">My Created Tours</h1>
+            <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">Manage the
+                tours you are offering to travelers around the world.</p>
+        </div>
+
+        <div id="loading" style="text-align: center;">Loading your tours...</div>
+        <div id="error-msg" style="color: #D64545; text-align: center; display: none;">Error loading your tours.</div>
+
+        <div id="empty-state" class="empty-state" style="display: none; padding: 4rem 1rem;">
+            <h2>You haven't created any tours yet</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">Start offering amazing experiences to
+                travelers today.</p>
+            <a href="/create-tour.html" class="btn-book" style="text-decoration: none; padding: 1rem 2rem;">Create Your
+                First Tour</a>
+        </div>
+
+        <div class="tours-grid" id="tours-container"></div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            initNav('my-tours');
+
+            const { isAuthenticated, user } = await checkAuth();
+            if (!isAuthenticated || user.role !== 'GUIDE') {
+                window.location.href = '/';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/v1/tours/guide/me');
+                if (response.ok) {
+                    const tours = await response.json();
+                    document.getElementById('loading').style.display = 'none';
+                    renderTours(tours);
+                } else {
+                    throw new Error('Failed to load tours');
+                }
+            } catch (err) {
+                console.error(err);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error-msg').style.display = 'block';
+            }
+        });
+
+        function renderTours(tours) {
+            const container = document.getElementById('tours-container');
+            const emptyState = document.getElementById('empty-state');
+
+            container.innerHTML = '';
+
+            if (tours.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            tours.forEach(tour => {
+                const imageUrl = tour.imageUrl || 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=800';
+
+                const cardHtml = `
+                    <article class="tour-card">
+                        <div class="card-image-wrapper">
+                            <img src="${imageUrl}" alt="${tour.title}" class="tour-image" />
+                            <div class="heart-icon" style="background:#fff; color:var(--text-primary); border-radius:12px; font-weight:700; font-size: 0.75rem; padding: 0.4rem 0.8rem; width: auto; height: auto; top: 1rem; right: 1rem;">
+                                ${tour.availableSpots} SPOTS LEFT
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="title-row">
+                                <h2 class="tour-title">
+                                    <a href="/tour-details.html?id=${tour.id}" style="text-decoration: none; color: inherit;">
+                                        ${tour.title}
+                                    </a>
+                                </h2>
+                            </div>
+                            
+                            <div class="tour-details">
+                                <div class="detail-item">
+                                    <span class="icon">📍</span> <span>${tour.location}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="icon">⏱</span> <span>${tour.duration}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card-footer">
+                            <div class="price-container">
+                                <div class="price-amount">€<span>${tour.pricePerPerson}</span></div>
+                                <div class="price-label">/person</div>
+                            </div>
+                            <a href="/tour-details.html?id=${tour.id}" class="btn-book">View Details</a>
+                        </div>
+                    </article>
+                `;
+                container.insertAdjacentHTML('beforeend', cardHtml);
+            });
+        }
+    </script>
+</body>
+
+</html>
