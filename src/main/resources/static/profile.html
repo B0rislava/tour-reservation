@@ -16,6 +16,9 @@
         <div class="profile-card-compact" id="profile-card" style="display: none;">
             <div class="profile-avatar-lg" id="profile-initial"></div>
             <h2 id="profile-name"></h2>
+            <div style="margin: 0.5rem 0;">
+                <span id="profile-role" style="padding: 0.3rem 1rem; border-radius: 20px; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;"></span>
+            </div>
             <p id="profile-email"></p>
             <p id="profile-bio" style="margin-top: 1rem; font-style: italic;"></p>
 
@@ -62,6 +65,18 @@
                     const user = await response.json();
                     document.getElementById('profile-initial').textContent = user.firstName.charAt(0).toUpperCase();
                     document.getElementById('profile-name').textContent = `${user.firstName} ${user.lastName}`;
+                    
+                    const roleBadge = document.getElementById('profile-role');
+                    if (user.role === 'GUIDE') {
+                        roleBadge.textContent = 'Tour Guide';
+                        roleBadge.style.backgroundColor = '#EBF4FF';
+                        roleBadge.style.color = '#3B82F6';
+                    } else {
+                        roleBadge.textContent = 'Traveler';
+                        roleBadge.style.backgroundColor = 'var(--rating-bg)';
+                        roleBadge.style.color = 'var(--accent)';
+                    }
+                    
                     document.getElementById('profile-email').textContent = user.email;
                     document.getElementById('profile-bio').textContent = user.bio || 'User bio goes here...';
                     
