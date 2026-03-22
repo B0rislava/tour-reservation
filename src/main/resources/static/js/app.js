@@ -24,9 +24,20 @@ async function renderNav(activePage = '') {
 
     if (isAuthenticated && user) {
         const initial = user.firstName ? user.firstName.charAt(0).toUpperCase() : 'U';
+        
+        if (user.role === 'GUIDE') {
+            navHtml += `
+                <a href="/my-tours.html" class="${activePage === 'my-tours' ? 'active' : ''}">My Tours</a>
+                <a href="/create-tour.html" class="${activePage === 'create-tour' ? 'active' : ''}">Create a Tour</a>
+            `;
+        } else {
+            navHtml += `
+                <a href="/bookings.html" class="${activePage === 'bookings' ? 'active' : ''}">Bookings</a>
+                <a href="/favorites.html" class="${activePage === 'favorites' ? 'active' : ''}">Favorites</a>
+            `;
+        }
+
         navHtml += `
-            <a href="/bookings.html" class="${activePage === 'bookings' ? 'active' : ''}">Bookings</a>
-            <a href="/favorites.html" class="${activePage === 'favorites' ? 'active' : ''}">Favorites</a>
             <a href="/profile.html" class="${activePage === 'profile' ? 'active' : ''}">
                 <div class="profile-pic">
                     <span>${initial}</span>

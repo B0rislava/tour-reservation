@@ -126,60 +126,64 @@
             document.getElementById('tour-price').textContent = tour.pricePerPerson;
 
             // Render right side widget based on authentication
-            const { isAuthenticated } = await checkAuth();
+            const { isAuthenticated, user } = await checkAuth();
             const widgetContainer = document.getElementById('booking-form-container');
 
             if (isAuthenticated) {
-                widgetContainer.innerHTML = `
-                    <form id="booking-form">
-                        <div class="form-group">
-                            <label for="participants">Participants</label>
-                            <select class="form-control" name="participants" id="participants">
-                                <option value="1">1 Person</option>
-                                <option value="2">2 Persons</option>
-                                <option value="3">3 Persons</option>
-                                <option value="4">4 Persons</option>
-                                <option value="5">5 Persons</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn-book btn-block">Confirm Booking</button>
-                    </form>
-                `;
+                if (user && user.role === 'GUIDE') {
+                    widgetContainer.innerHTML = `<div style="text-align:center; padding: 1rem; color: var(--price-color); background: var(--rating-bg); border-radius: 12px; font-weight: 600;">As a Tour Guide, you cannot book tours.</div>`;
+                } else {
+                    widgetContainer.innerHTML = `
+                        <form id="booking-form">
+                            <div class="form-group">
+                                <label for="participants">Participants</label>
+                                <select class="form-control" name="participants" id="participants">
+                                    <option value="1">1 Person</option>
+                                    <option value="2">2 Persons</option>
+                                    <option value="3">3 Persons</option>
+                                    <option value="4">4 Persons</option>
+                                    <option value="5">5 Persons</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn-book btn-block">Confirm Booking</button>
+                        </form>
+                    `;
 
-                document.getElementById('booking-form').addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    
-                    const participants = document.getElementById('participants').value;
-                    try {
-                        const res = await fetch('/api/v1/bookings/create', {
-                            method: 'POST',
-                            headers: {'Content-Type': 'application/json'},
-                            body: JSON.stringify({ 
-                                tourId: parseInt(currentTourId), 
-                                participants: parseInt(participants) 
-                            })
-                        });
+                    document.getElementById('booking-form').addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        
+                        const participants = document.getElementById('participants').value;
+                        try {
+                            const res = await fetch('/api/v1/bookings/create', {
+                                method: 'POST',
+                                headers: {'Content-Type': 'application/json'},
+                                body: JSON.stringify({ 
+                                    tourId: parseInt(currentTourId), 
+                                    participants: parseInt(participants) 
+                                })
+                            });
 
-                        const msgDiv = document.getElementById('booking-msg');
-                        const data = await res.json();
-                        msgDiv.style.display = 'block';
+                            const msgDiv = document.getElementById('booking-msg');
+                            const data = await res.json();
+                            msgDiv.style.display = 'block';
 
-                        if (res.ok) {
-                            msgDiv.style.background = '#e0f8e9';
-                            msgDiv.style.color = '#2e7d32';
-                            msgDiv.textContent = data.message || 'Booking successful!';
-                            
-                            // Re-fetch tour details to display updated available capacity
-                            fetchTourDetails();
-                        } else {
-                            msgDiv.style.background = '#FFF0F0';
-                            msgDiv.style.color = '#ff6b6b';
-                            msgDiv.textContent = data.error || 'Booking failed.';
+                            if (res.ok) {
+                                msgDiv.style.background = '#e0f8e9';
+                                msgDiv.style.color = '#2e7d32';
+                                msgDiv.textContent = data.message || 'Booking successful!';
+                                
+                                // Re-fetch tour details to display updated available capacity
+                                fetchTourDetails();
+                            } else {
+                                msgDiv.style.background = '#FFF0F0';
+                                msgDiv.style.color = '#ff6b6b';
+                                msgDiv.textContent = data.error || 'Booking failed.';
+                            }
+                        } catch (err) {
+                            console.error('Booking err:', err);
                         }
-                    } catch (err) {
-                        console.error('Booking err:', err);
-                    }
-                });
+                    });
+                }
             } else {
                 widgetContainer.innerHTML = `
                     <a href="/login.html" class="btn-book btn-block" style="display:block; text-align:center; text-decoration:none; padding: 1rem;">

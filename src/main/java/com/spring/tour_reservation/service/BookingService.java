@@ -31,6 +31,10 @@ public class BookingService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+        if (user.getRole() == com.spring.tour_reservation.model.UserRole.GUIDE) {
+            throw new RuntimeException("Tour Guides cannot book tours!");
+        }
+
         Tour tour = tourRepository.findById(tourId)
                 .orElseThrow(() -> new RuntimeException("Tour not found"));
 
