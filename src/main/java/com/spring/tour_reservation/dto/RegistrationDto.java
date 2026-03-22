@@ -15,4 +15,5 @@ public class RegistrationDto {
     private String lastName;
     private String password;
     private String confirmPassword;
+    private String role;
 }

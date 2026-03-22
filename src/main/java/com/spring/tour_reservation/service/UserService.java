@@ -39,12 +39,17 @@ public class UserService {
             throw new RuntimeException("Passwords do not match!");
         }
 
+        UserRole assignedRole = UserRole.TRAVELER;
+        if (registrationDto.getRole() != null && registrationDto.getRole().equalsIgnoreCase("GUIDE")) {
+            assignedRole = UserRole.GUIDE;
+        }
+
         User user = User.builder()
                 .email(registrationDto.getEmail())
                 .firstName(registrationDto.getFirstName())
                 .lastName(registrationDto.getLastName())
                 .password(passwordEncoder.encode(registrationDto.getPassword()))
-                .role(UserRole.TRAVELER)
+                .role(assignedRole)
                 .build();
 
         userRepository.save(user);

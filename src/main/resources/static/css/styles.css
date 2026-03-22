@@ -518,6 +518,46 @@ body {
     font-weight: 500;
 }
 
+/* ============ Role Selector ============ */
+.role-selector {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.role-option {
+    flex: 1;
+    cursor: pointer;
+}
+
+.role-option input[type="radio"] {
+    display: none;
+}
+
+.role-label {
+    display: block;
+    text-align: center;
+    padding: 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+}
+
+.role-option input[type="radio"]:checked + .role-label {
+    border-color: var(--accent);
+    background-color: #FFF1E6;
+    color: var(--accent);
+}
+
+.role-option:hover .role-label {
+    border-color: #d1cfd9;
+}
+.role-option input[type="radio"]:checked:hover + .role-label {
+    border-color: var(--accent);
+}
+
 /* ============ Profile Page ============ */
 .profile-no-scroll {
     overflow: hidden !important;
