@@ -67,7 +67,13 @@
                     document.getElementById('profile-name').textContent = `${user.firstName} ${user.lastName}`;
                     
                     const roleBadge = document.getElementById('profile-role');
-                    if (user.role === 'GUIDE') {
+                    if (user.role === 'ADMIN') {
+                        roleBadge.textContent = 'Administrator';
+                        roleBadge.style.backgroundColor = '#FFE8CC';
+                        roleBadge.style.color = '#E67E22';
+                        // Hide delete button for admins
+                        document.getElementById('delete-action-container').style.display = 'none';
+                    } else if (user.role === 'GUIDE') {
                         roleBadge.textContent = 'Tour Guide';
                         roleBadge.style.backgroundColor = '#EBF4FF';
                         roleBadge.style.color = '#3B82F6';

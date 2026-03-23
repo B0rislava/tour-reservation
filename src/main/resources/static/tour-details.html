@@ -130,8 +130,9 @@
             const widgetContainer = document.getElementById('booking-form-container');
 
             if (isAuthenticated) {
-                if (user && user.role === 'GUIDE') {
-                    widgetContainer.innerHTML = `<div style="text-align:center; padding: 1rem; color: var(--price-color); background: var(--rating-bg); border-radius: 12px; font-weight: 600;">As a Tour Guide, you cannot book tours.</div>`;
+                if (user && (user.role === 'GUIDE' || user.role === 'ADMIN')) {
+                    const message = user.role === 'ADMIN' ? 'As an Administrator, you cannot book tours.' : 'As a Tour Guide, you cannot book tours.';
+                    widgetContainer.innerHTML = `<div style="text-align:center; padding: 1rem; color: var(--price-color); background: var(--rating-bg); border-radius: 12px; font-weight: 600;">${message}</div>`;
                 } else {
                     widgetContainer.innerHTML = `
                         <form id="booking-form">

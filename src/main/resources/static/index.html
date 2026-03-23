@@ -33,12 +33,14 @@
                     const tours = await response.json();
                     
                     let favoriteIds = [];
+                    let userRole = null;
                     const authRes = await checkAuth();
                     if (authRes.isAuthenticated) {
                         favoriteIds = await getUserFavorites();
+                        userRole = authRes.user.role;
                     }
                     
-                    renderTours(tours, favoriteIds);
+                    renderTours(tours, favoriteIds, userRole);
                 } else {
                     console.error('Failed to load tours');
                 }
@@ -47,7 +49,7 @@
             }
         }
 
-        function renderTours(tours, favoriteIds = []) {
+        function renderTours(tours, favoriteIds = [], userRole = null) {
             const container = document.getElementById('tours-container');
             const emptyWarning = document.getElementById('empty-warning');
 
@@ -65,6 +67,10 @@
                 const rating = tour.rating === 0.0 ? '0.0' : tour.rating;
                 const isFavorited = favoriteIds.includes(tour.id);
                 const heartIcon = isFavorited ? '❤️' : '🤍';
+                
+                // Only show "Book Now" for travelers or unauthenticated users.
+                // For ADMIN or GUIDE, show "View Details".
+                const btnText = (userRole === 'ADMIN' || userRole === 'GUIDE') ? 'View Details' : 'Book Now';
                 
                 html += `
                 <article class="tour-card">
@@ -113,7 +119,7 @@
                             <div class="price-amount">€<span>${tour.pricePerPerson}</span></div>
                             <div class="price-label">/person</div>
                         </div>
-                        <a href="/tour-details.html?id=${tour.id}" class="btn-book">Book Now</a>
+                        <a href="/tour-details.html?id=${tour.id}" class="btn-book">${btnText}</a>
                     </div>
                 </article>
                 `;
