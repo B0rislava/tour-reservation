@@ -85,6 +85,11 @@ public class UserService {
     public void deleteUser(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        if (user.getRole() == UserRole.ADMIN) {
+            throw new RuntimeException("Administrators cannot delete their own accounts!");
+        }
+        
         userRepository.delete(user);
     }
 
@@ -126,5 +131,25 @@ public class UserService {
         return user.getSavedTours().stream()
                 .map(tourMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserDto> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void deleteUserById(Long id, String currentUserEmail) {
+        User userToDelete = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        if (userToDelete.getEmail().equals(currentUserEmail)) {
+            throw new RuntimeException("You cannot delete your own account!");
+        }
+        
+        userRepository.deleteById(id);
     }
 }

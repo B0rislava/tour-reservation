@@ -77,4 +77,12 @@ public class TourService {
         tourRepository.save(tour);
         return tour.getId();
     }
+
+    @Transactional
+    public void deleteTour(Long id) {
+        if (!tourRepository.existsById(id)) {
+            throw new RuntimeException("Tour not found!");
+        }
+        tourRepository.deleteById(id);
+    }
 }
