@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tour Management | Tourly</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="/js/app.js" defer></script>
+</head>
+
+<body class="bookings-layout" style="background-color: #F8F9FA;">
+    <header class="navbar"></header>
+
+    <main class="container">
+        <div class="page-header" style="text-align: center; margin-bottom: 2rem;">
+            <a href="/admin/dashboard.html" style="text-decoration: none; color: var(--accent); font-weight: 600; font-size: 0.9rem; text-transform: uppercase;">&larr; Back to Dashboard</a>
+            <h1 style="font-size: 2.2rem; color: var(--text-primary); margin-top: 1rem;">Tour Management</h1>
+        </div>
+
+        <div class="tour-card" style="padding: 1.5rem; overflow-x: auto; background: #fff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead>
+                    <tr style="border-bottom: 2px solid #F1F3F5;">
+                        <th style="padding: 1rem;">Tour Title</th>
+                        <th style="padding: 1rem;">Location</th>
+                        <th style="padding: 1rem;">Guide</th>
+                        <th style="padding: 1rem;">Price</th>
+                        <th style="padding: 1rem; text-align: center;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tour-list">
+                    <!-- Tours will be loaded here -->
+                </tbody>
+            </table>
+            <div id="loading" style="text-align: center; padding: 2rem;">Loading tours...</div>
+            <div id="empty-state" style="text-align: center; padding: 2rem; display: none;">No tours found.</div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            initNav('admin-dashboard');
+
+            const { isAuthenticated, user } = await checkAuth();
+            if (!isAuthenticated || user.role !== 'ADMIN') {
+                window.location.href = '/';
+                return;
+            }
+
+            loadTours();
+        });
+
+        async function loadTours() {
+            try {
+                const response = await fetch('/api/v1/admin/tours');
+                if (response.ok) {
+                    const tours = await response.json();
+                    renderTours(tours);
+                }
+            } catch (err) {
+                console.error("Failed to load tours", err);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        function renderTours(tours) {
+            const list = document.getElementById('tour-list');
+            const emptyState = document.getElementById('empty-state');
+            list.innerHTML = '';
+            
+            if (tours.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            tours.forEach(t => {
+                const row = document.createElement('tr');
+                row.style.borderBottom = '1px solid #F1F3F5';
+                row.innerHTML = `
+                    <td style="padding: 1rem;">
+                        <div style="font-weight: 600;">${t.title}</div>
+                    </td>
+                    <td style="padding: 1rem; color: var(--text-secondary);">${t.location}</td>
+                    <td style="padding: 1rem;">
+                        <span style="background: #F8F9FA; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.8rem; border: 1px solid #E9ECEF;">
+                            ${t.guideName}
+                        </span>
+                    </td>
+                    <td style="padding: 1rem; font-weight: 700;">€${t.pricePerPerson}</td>
+                    <td style="padding: 1rem; text-align: center;">
+                        <button onclick="deleteTour(${t.id})" 
+                                style="background: #FFF0F0; color: #D64545; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                            Delete
+                        </button>
+                    </td>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        async function deleteTour(id) {
+            if (!confirm('Are you sure you want to delete this tour? This action cannot be undone.')) return;
+            
+            try {
+                const response = await fetch(`/api/v1/admin/tours/${id}`, { method: 'DELETE' });
+                if (response.ok) {
+                    loadTours();
+                } else {
+                    alert('Failed to delete tour.');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('An error occurred.');
+            }
+        }
+    </script>
+</body>
+
+</html>

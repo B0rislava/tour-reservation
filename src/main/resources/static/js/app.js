@@ -25,7 +25,11 @@ async function renderNav(activePage = '') {
     if (isAuthenticated && user) {
         const initial = user.firstName ? user.firstName.charAt(0).toUpperCase() : 'U';
         
-        if (user.role === 'GUIDE') {
+        if (user.role === 'ADMIN') {
+            navHtml += `
+                <a href="/admin/dashboard.html" class="${activePage === 'admin-dashboard' ? 'active' : ''}">Admin Panel</a>
+            `;
+        } else if (user.role === 'GUIDE') {
             navHtml += `
                 <a href="/my-tours.html" class="${activePage === 'my-tours' ? 'active' : ''}">My Tours</a>
                 <a href="/create-tour.html" class="${activePage === 'create-tour' ? 'active' : ''}">Create a Tour</a>

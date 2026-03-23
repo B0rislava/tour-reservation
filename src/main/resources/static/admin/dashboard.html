@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Tourly</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="/js/app.js" defer></script>
+</head>
+
+<body class="bookings-layout" style="background-color: #F8F9FA;">
+    <header class="navbar"></header>
+
+    <main class="container">
+        <div class="page-header" style="text-align: center; margin-bottom: 3rem;">
+            <h1 style="font-size: 2.5rem; color: var(--text-primary);">Admin Dashboard</h1>
+            <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+                Manage users and tours across the platform.
+            </p>
+        </div>
+
+        <div class="admin-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
+            <div class="tour-card" style="padding: 2rem; text-align: center; cursor: pointer;" onclick="window.location.href='/admin/users.html'">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">👥</div>
+                <h2 style="margin-bottom: 1rem;">User Management</h2>
+                <p style="color: var(--text-secondary);">View and delete users from the system.</p>
+                <div style="margin-top: 1.5rem;"><span class="btn-book" style="display: inline-block;">Manage Users</span></div>
+            </div>
+
+            <div class="tour-card" style="padding: 2rem; text-align: center; cursor: pointer;" onclick="window.location.href='/admin/tours.html'">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🌍</div>
+                <h2 style="margin-bottom: 1rem;">Tour Management</h2>
+                <p style="color: var(--text-secondary);">Oversee and remove tours listed on the platform.</p>
+                <div style="margin-top: 1.5rem;"><span class="btn-book" style="display: inline-block;">Manage Tours</span></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            initNav('admin-dashboard');
+
+            const { isAuthenticated, user } = await checkAuth();
+            if (!isAuthenticated || user.role !== 'ADMIN') {
+                window.location.href = '/';
+
+            }
+        });
+    </script>
+</body>
+
+</html>
