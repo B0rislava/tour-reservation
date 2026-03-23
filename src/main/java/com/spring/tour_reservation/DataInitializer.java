@@ -26,20 +26,46 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String @NonNull ... args) {
 
-        if (userRepository.count() == 0) {
-            
+        userRepository.findByEmail("admin@gmail.com").ifPresentOrElse(
+                user -> {
+                    if (user.getRole() != UserRole.ADMIN) {
+                        user.setRole(UserRole.ADMIN);
+                        userRepository.save(user);
+                        System.out.println("Updated existing user to ADMIN role: admin@gmail.com");
+                    }
+                },
+                () -> {
+                    User admin = User.builder()
+                            .email("admin@gmail.com")
+                            .firstName("Admin")
+                            .lastName("User")
+                            .password(passwordEncoder.encode("admin123"))
+                            .role(UserRole.ADMIN)
+                            .bio("System administrator.")
+                            .build();
+                    userRepository.save(admin);
+                    System.out.println("Created new admin user: admin@gmail.com");
+                }
+        );
 
-            User guide = User.builder()
-                    .email("guide@tourly.com")
+        User guide = userRepository.findByEmail("guide@gmail.com").orElseGet(() -> {
+            User newGuide = User.builder()
+                    .email("guide@gmail.com")
                     .firstName("Ivan")
                     .lastName("Ivanov")
-                    .password(passwordEncoder.encode("secret123")) 
+                    .password(passwordEncoder.encode("secret123"))
                     .role(UserRole.GUIDE)
                     .bio("Veteran guide with 15 years of experience in the mountains.")
                     .build();
+            return userRepository.save(newGuide);
+        });
+
+        if (guide.getRole() != UserRole.GUIDE) {
+            guide.setRole(UserRole.GUIDE);
             userRepository.save(guide);
+        }
 
-
+        if (tourRepository.count() == 0) {
             Tour rilaTour = Tour.builder()
                     .guide(guide)
                     .title("The Seven Rila Lakes")
@@ -82,9 +108,7 @@ public class DataInitializer implements CommandLineRunner {
 
             tourRepository.save(rilaTour);
             tourRepository.save(varnaTour);
-
-
-            System.out.println("DB is initialized with tours and bookings.");
+            System.out.println("Initialized demo tours.");
         }
     }
 }

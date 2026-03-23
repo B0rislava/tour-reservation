@@ -25,7 +25,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/api/v1/auth/**", "/api/v1/tours/**", "/css/**", "/js/**", "/images/**", "/h2-console/**", "/v3/api-docs/**", "/swagger-ui/**", "/*.html", "/").permitAll()
-                    .requestMatchers("/api/v1/bookings/**", "/api/v1/users/**").hasAnyRole("TRAVELER", "GUIDE")
+                    .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                    .requestMatchers("/api/v1/bookings/**", "/api/v1/users/**").hasAnyRole("TRAVELER", "GUIDE", "ADMIN")
                     .anyRequest().authenticated()
                 )
                 .exceptionHandling(exc -> exc
