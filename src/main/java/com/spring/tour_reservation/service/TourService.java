@@ -79,10 +79,39 @@ public class TourService {
     }
 
     @Transactional
-    public void deleteTour(Long id) {
-        if (!tourRepository.existsById(id)) {
-            throw new RuntimeException("Tour not found!");
+    public void deleteTour(Long id, String guideEmail) {
+        Tour tour = tourRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tour not found!"));
+        
+        // Only the guide who created it OR an admin can delete it
+        if (!tour.getGuide().getEmail().equals(guideEmail)) {
+            User user = userRepository.findByEmail(guideEmail)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            if (user.getRole() != UserRole.ADMIN) {
+                throw new RuntimeException("You are not authorized to delete this tour!");
+            }
         }
-        tourRepository.deleteById(id);
+        
+        tourRepository.delete(tour);
+    }
+
+    @Transactional
+    public void updateTour(Long id, TourDto updateDto, String guideEmail) {
+        Tour tour = tourRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tour not found!"));
+        
+        if (!tour.getGuide().getEmail().equals(guideEmail)) {
+            throw new RuntimeException("You are not authorized to edit this tour!");
+        }
+
+        tour.setTitle(updateDto.getTitle());
+        tour.setDescription(updateDto.getDescription());
+        tour.setLocation(updateDto.getLocation());
+        tour.setDuration(updateDto.getDuration());
+        tour.setPricePerPerson(updateDto.getPricePerPerson());
+        tour.setMaxGroupSize(updateDto.getMaxGroupSize());
+        tour.setMeetingPoint(updateDto.getMeetingPoint());
+        
+        tourRepository.save(tour);
     }
 }

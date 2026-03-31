@@ -13,6 +13,8 @@ import com.spring.tour_reservation.dto.TourDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import java.security.Principal;
 
@@ -48,5 +50,21 @@ public class TourController {
     public ResponseEntity<Long> createTour(@RequestBody TourDto tourDto, Principal principal) {
         if (principal == null) return ResponseEntity.status(401).build();
         return ResponseEntity.ok(tourService.createTour(tourDto, principal.getName()));
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a tour (Guides/Admin only)")
+    public ResponseEntity<Void> deleteTour(@PathVariable Long id, Principal principal) {
+        if (principal == null) return ResponseEntity.status(401).build();
+        tourService.deleteTour(id, principal.getName());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update a tour (Guides only)")
+    public ResponseEntity<Void> updateTour(@PathVariable Long id, @RequestBody TourDto tourDto, Principal principal) {
+        if (principal == null) return ResponseEntity.status(401).build();
+        tourService.updateTour(id, tourDto, principal.getName());
+        return ResponseEntity.ok().build();
     }
 }
