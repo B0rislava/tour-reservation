@@ -40,8 +40,8 @@ public class AdminController {
     }
 
     @DeleteMapping("/tours/{id}")
-    public ResponseEntity<Void> deleteTour(@PathVariable Long id) {
-        tourService.deleteTour(id);
+    public ResponseEntity<Void> deleteTour(@PathVariable Long id, Principal principal) {
+        tourService.deleteTour(id, principal.getName());
         return ResponseEntity.noContent().build();
     }
 }
