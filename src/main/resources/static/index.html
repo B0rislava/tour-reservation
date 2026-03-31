@@ -13,10 +13,9 @@
 
     <main class="container">
         <section class="tours-grid" id="tours-container">
-            <div class="warning-empty" style="display: none;" id="empty-warning">
+            <div class="warning-empty u-hidden" id="empty-warning">
                 Oops! There are no tours available right now.
             </div>
-            <!-- Tour cards will be dynamically injected here -->
         </section>
     </main>
 
@@ -70,13 +69,16 @@
                 
                 // Only show "Book Now" for travelers or unauthenticated users.
                 // For ADMIN or GUIDE, show "View Details".
+                const showHeart = (userRole === null || userRole === 'TRAVELER');
+                const heartHtml = showHeart ? `<div class="heart-icon-interactive" onclick="toggleFavorite(${tour.id}, this)">${heartIcon}</div>` : '';
+                
                 const btnText = (userRole === 'ADMIN' || userRole === 'GUIDE') ? 'View Details' : 'Book Now';
                 
                 html += `
                 <article class="tour-card">
                     <div class="card-image-wrapper">
                         <img src="${tour.imageUrl || 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=800'}" alt="${tour.title}" class="tour-image" />
-                        <div class="heart-icon" onclick="toggleFavorite(${tour.id}, this)" style="cursor:pointer; z-index:10; position:absolute; top:1rem; right:1rem;">${heartIcon}</div>
+                        ${heartHtml}
                     </div>
                     <div class="card-content">
                         <div class="title-row">

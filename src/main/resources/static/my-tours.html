@@ -15,16 +15,11 @@
     <header class="navbar"></header>
 
     <main class="container">
-        <div class="page-header" style="text-align: center; margin-bottom: 3rem;">
-            <h1 style="font-size: 2.5rem; color: var(--text-primary);">My Created Tours</h1>
-            <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">Manage the
-                tours you are offering to travelers around the world.</p>
-        </div>
 
-        <div id="loading" style="text-align: center;">Loading your tours...</div>
-        <div id="error-msg" style="color: #D64545; text-align: center; display: none;">Error loading your tours.</div>
+        <div id="loading" class="u-text-center u-padding-2">Loading your tours...</div>
+        <div id="error-msg" class="u-text-center u-hidden" style="color: #D64545;">Error loading your tours.</div>
 
-        <div id="empty-state" class="empty-state" style="display: none; padding: 4rem 1rem;">
+        <div id="empty-state" class="empty-state u-hidden">
             <h2>You haven't created any tours yet</h2>
             <p style="color: var(--text-secondary); margin-bottom: 2rem;">Start offering amazing experiences to
                 travelers today.</p>
@@ -79,7 +74,7 @@
                     <article class="tour-card">
                         <div class="card-image-wrapper">
                             <img src="${imageUrl}" alt="${tour.title}" class="tour-image" />
-                            <div class="heart-icon" style="background:#fff; color:var(--text-primary); border-radius:12px; font-weight:700; font-size: 0.75rem; padding: 0.4rem 0.8rem; width: auto; height: auto; top: 1rem; right: 1rem;">
+                            <div class="badge-spots">
                                 ${tour.availableSpots} SPOTS LEFT
                             </div>
                         </div>
@@ -102,17 +97,41 @@
                             </div>
                         </div>
                         
-                        <div class="card-footer">
-                            <div class="price-container">
-                                <div class="price-amount">€<span>${tour.pricePerPerson}</span></div>
-                                <div class="price-label">/person</div>
+                        <div class="card-footer" style="padding: 1rem; border-top: 1px solid var(--border);">
+                            <div style="display: flex; gap: 0.5rem; width: 100%;">
+                                <a href="/create-tour.html?id=${tour.id}" class="btn-secondary btn-edit" 
+                                   style="flex: 1; text-align: center; text-decoration: none; padding: 0.6rem; border-radius: 8px; border: none; font-weight: 700;">
+                                   Edit
+                                </a>
+                                <button onclick="deleteTour(${tour.id})" class="btn-secondary btn-delete" 
+                                        style="flex: 1; border: none; padding: 0.6rem; border-radius: 8px; font-weight: 700; cursor: pointer;">
+                                    Delete
+                                </button>
                             </div>
-                            <a href="/tour-details.html?id=${tour.id}" class="btn-book">View Details</a>
                         </div>
                     </article>
                 `;
                 container.insertAdjacentHTML('beforeend', cardHtml);
             });
+        }
+
+        async function deleteTour(id) {
+            if (!confirm('Are you sure you want to delete this tour? This action cannot be undone.')) return;
+
+            try {
+                const res = await fetch(`/api/v1/tours/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (res.ok) {
+                    location.reload();
+                } else {
+                    alert('Failed to delete tour.');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('An error occurred.');
+            }
         }
     </script>
 </body>

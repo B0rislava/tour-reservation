@@ -13,7 +13,7 @@
 
     <main class="container">
         <section class="tours-grid" id="tours-container">
-            <div class="warning-empty" style="display: none;" id="empty-warning">
+            <div class="warning-empty u-hidden" id="empty-warning">
                 Oops! You have no favorite tours yet.
             </div>
         </section>
@@ -30,6 +30,11 @@
                 const authRes = await checkAuth();
                 if (!authRes.isAuthenticated) {
                     window.location.href = '/login.html';
+                    return;
+                }
+                
+                if (authRes.user.role !== 'TRAVELER') {
+                    window.location.href = '/';
                     return;
                 }
 
@@ -73,7 +78,7 @@
                 <article class="tour-card" id="tour-card-${tour.id}">
                     <div class="card-image-wrapper">
                         <img src="${tour.imageUrl || 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=800'}" alt="${tour.title}" class="tour-image" />
-                        <div class="heart-icon" onclick="toggleFavorite(${tour.id}, this)" style="cursor:pointer; z-index:10; position:absolute; top:1rem; right:1rem;">${heartIcon}</div>
+                        <div class="heart-icon-interactive" onclick="toggleFavorite(${tour.id}, this)">${heartIcon}</div>
                     </div>
                     <div class="card-content">
                         <div class="title-row">
