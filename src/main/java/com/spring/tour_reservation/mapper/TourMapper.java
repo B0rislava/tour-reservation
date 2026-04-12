@@ -10,8 +10,6 @@ public abstract class TourMapper {
 
     @Mapping(target = "guideId", source = "guide.id")
     @Mapping(target = "guideName", expression = "java(tour.getGuide().getFirstName() + \" \" + tour.getGuide().getLastName())")
-    @Mapping(target = "rating", constant = "0.0")
-    @Mapping(target = "reviewsCount", constant = "0")
     @Mapping(target = "imageUrl", expression = "java(getMainImageUrl(tour))")
     public abstract TourDto toDto(Tour tour);
 

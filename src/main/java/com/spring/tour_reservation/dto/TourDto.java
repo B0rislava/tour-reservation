@@ -29,8 +29,6 @@ public class TourDto {
     private LocalTime startTime;
     private LocalDateTime createdAt;
     private String status;
-    private Double rating;
-    private Integer reviewsCount;
     private String meetingPoint;
     private String imageUrl;
 }

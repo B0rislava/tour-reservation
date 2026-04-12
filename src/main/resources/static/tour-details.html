@@ -23,10 +23,7 @@
 
                 <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
                     <h1 class="details-title" id="tour-title" style="margin-bottom: 0;"></h1>
-                    <div class="rating-badge" style="padding: 0.5rem 0.8rem; font-size: 1rem;">
-                        <span class="star">★</span> <span id="tour-rating">0.0</span>
-                        <span class="review-count">(<span id="tour-reviews">0</span>)</span>
-                    </div>
+
                 </div>
 
                 <div class="tour-details" style="margin-bottom: 2rem;">
@@ -117,8 +114,6 @@
 
             document.getElementById('tour-image').src = tour.imageUrl || 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=1200';
             document.getElementById('tour-title').textContent = tour.title;
-            document.getElementById('tour-rating').textContent = tour.rating === 0.0 ? '0.0' : tour.rating;
-            document.getElementById('tour-reviews').textContent = tour.reviewsCount || 0;
 
             let timeStr = tour.startTime || 'TBA';
             if (timeStr && timeStr.length > 5 && timeStr.includes(':')) {

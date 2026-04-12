@@ -17,6 +17,4 @@ public class UserDto {
     private String lastName;
     private String bio;
     private UserRole role;
-    private Double rating;
-    private Integer reviewsCount;
 }

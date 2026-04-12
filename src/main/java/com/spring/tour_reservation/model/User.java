@@ -58,13 +58,6 @@ public class User {
     @Column(name = "bio", length = 1000)
     private String bio;
 
-    @Column(name = "rating")
-    @Builder.Default
-    private Double rating = 0.0;
-
-    @Column(name = "reviews_count")
-    @Builder.Default
-    private Integer reviewsCount = 0;
 
     // OneToMany - one USER (guide) - many TOURS
     @EqualsAndHashCode.Exclude
