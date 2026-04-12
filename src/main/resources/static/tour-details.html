@@ -21,8 +21,9 @@
             <div class="details-content">
                 <img id="tour-image" src="" alt="Tour Image" class="details-hero-img">
 
-                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem;">
                     <h1 class="details-title" id="tour-title" style="margin-bottom: 0;"></h1>
+                    <div id="favorite-container"></div>
 
                 </div>
 
@@ -32,6 +33,9 @@
                     </div>
                     <div class="detail-item">
                         <span class="icon" style="color: var(--text-secondary);"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg></span> <span id="tour-location"></span>
+                    </div>
+                    <div class="detail-item" id="meeting-point-container" style="display: none;">
+                        <span class="icon" style="color: var(--text-secondary);"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg></span> Meet at: <span id="tour-meetingpoint"></span>
                     </div>
                     <div class="detail-item">
                         <span class="icon" style="color: var(--text-secondary);"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span> <span id="tour-duration"></span>
@@ -131,6 +135,11 @@
             document.getElementById('tour-datetime').textContent = `${dateStr} at ${timeStr}`;
             document.getElementById('tour-location').textContent = tour.location;
             
+            if (tour.meetingPoint) {
+                document.getElementById('meeting-point-container').style.display = 'flex';
+                document.getElementById('tour-meetingpoint').textContent = tour.meetingPoint;
+            }
+            
             function formatDuration(d) {
                 if (!d) return '';
                 if (d.includes(':')) {
@@ -216,6 +225,41 @@
                         Login to Book
                     </a>
                 `;
+            }
+
+            // Favorite Logic
+            if (isAuthenticated && user && user.role === 'TRAVELER') {
+                try {
+                    const favoriteIds = await getUserFavorites();
+                    let isFavorited = favoriteIds.includes(tour.id);
+                    
+                    function updateFavoriteIcon() {
+                        const heartFilled = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" color="#e63946"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
+                        const heartOutline = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" color="var(--text-secondary)"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>`;
+                        
+                        document.getElementById('favorite-container').innerHTML = `
+                            <div style="cursor: pointer; display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: #FFF1E6; border-radius: 50%; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" id="tour-fav-btn">
+                                ${isFavorited ? heartFilled : heartOutline}
+                            </div>
+                        `;
+                        
+                        document.getElementById('tour-fav-btn').addEventListener('click', async () => {
+                            const method = isFavorited ? 'DELETE' : 'POST';
+                            try {
+                                const response = await fetch('/api/v1/users/favorites/' + tour.id, { method: method });
+                                if (response.ok) {
+                                    isFavorited = !isFavorited;
+                                    updateFavoriteIcon();
+                                }
+                            } catch (e) {
+                                console.error("Error toggling favorite", e);
+                            }
+                        });
+                    }
+                    updateFavoriteIcon();
+                } catch(err) {
+                    console.error("Failed to load favorites for widget", err);
+                }
             }
         }
     </script>

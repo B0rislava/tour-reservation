@@ -65,8 +65,7 @@ public class Tour {
     @Column(name = "price_per_person", nullable = false)
     private Double pricePerPerson;
 
-    @Column(name = "whats_included", length = 1000)
-    private String whatsIncluded;
+
 
     @Column(name = "scheduled_date")
     private LocalDate scheduledDate;

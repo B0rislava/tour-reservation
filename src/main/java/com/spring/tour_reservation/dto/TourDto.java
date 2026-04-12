@@ -24,7 +24,6 @@ public class TourDto {
     private Integer maxGroupSize;
     private Integer availableSpots;
     private Double pricePerPerson;
-    private String whatsIncluded;
     private LocalDate scheduledDate;
     private LocalTime startTime;
     private LocalDateTime createdAt;

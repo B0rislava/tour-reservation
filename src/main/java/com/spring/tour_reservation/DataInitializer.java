@@ -75,6 +75,7 @@ public class DataInitializer implements CommandLineRunner {
                     .maxGroupSize(15)
                     .availableSpots(15)
                     .pricePerPerson(45.0)
+                    .meetingPoint("Alexander Nevsky Cathedral, Sofia")
                     .scheduledDate(LocalDate.now().plusDays(5))
                     .startTime(LocalTime.of(8, 0))
                     .build();
@@ -95,6 +96,7 @@ public class DataInitializer implements CommandLineRunner {
                     .maxGroupSize(8)
                     .availableSpots(8)
                     .pricePerPerson(120.0)
+                    .meetingPoint("Varna Central Bus Station")
                     .scheduledDate(LocalDate.now().plusWeeks(2))
                     .startTime(LocalTime.of(9, 30))
                     .build();

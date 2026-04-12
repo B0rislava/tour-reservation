@@ -34,9 +34,6 @@ public class TourDetails {
     @Column(name = "description", length = 3000)
     private String description;
 
-    @Column(name = "whats_included", length = 1000)
-    private String whatsIncluded;
-
     @Column(name = "meeting_point", length = 500)
     private String meetingPoint;
 

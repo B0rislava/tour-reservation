@@ -23,5 +23,6 @@ public class BookingDto {
     private Integer numberOfParticipants;
     private LocalDateTime bookingDate;
     private String status;
+    private Double totalPrice;
     
 }
