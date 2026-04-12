@@ -85,7 +85,7 @@ async function getUserFavorites() {
 }
 
 async function toggleFavorite(tourId, iconElement) {
-    const isFavorited = iconElement.innerText.trim() === '❤️';
+    const isFavorited = iconElement.getAttribute('data-favorited') === 'true';
     const method = isFavorited ? 'DELETE' : 'POST';
 
     try {
@@ -94,7 +94,11 @@ async function toggleFavorite(tourId, iconElement) {
         });
 
         if (response.ok) {
-            iconElement.innerText = isFavorited ? '🤍' : '❤️';
+            const heartFilled = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" color="#e63946"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
+            const heartOutline = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" color="white"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>`;
+
+            iconElement.innerHTML = isFavorited ? heartOutline : heartFilled;
+            iconElement.setAttribute('data-favorited', (!isFavorited).toString());
 
             if (isFavorited && window.location.pathname.includes('favorites.html')) {
                 const card = iconElement.closest('.tour-card');
@@ -115,5 +119,27 @@ async function toggleFavorite(tourId, iconElement) {
         }
     } catch (e) {
         console.error("Error toggling favorite", e);
+    }
+}
+
+function formatDuration(d) {
+    if (!d) return '';
+    if (d.includes(':')) {
+        const parts = d.split(':');
+        const h = parseInt(parts[0], 10);
+        const m = parseInt(parts[1], 10);
+        return `${h > 0 ? h + ' hours' : ''}${h > 0 && m > 0 ? ' ' : ''}${m > 0 ? m + ' mins' : ''}`.trim();
+    }
+    return d;
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return 'TBD';
+    try {
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return dateStr;
+        return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    } catch(e) {
+        return dateStr;
     }
 }

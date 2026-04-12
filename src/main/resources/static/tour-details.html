@@ -31,13 +31,17 @@
 
                 <div class="tour-details" style="margin-bottom: 2rem;">
                     <div class="detail-item">
-                        <span class="icon">📍</span> <span id="tour-location"></span>
+                        <span class="icon" style="color: var(--text-secondary);"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg></span> <span id="tour-datetime"></span>
                     </div>
                     <div class="detail-item">
-                        <span class="icon">⏱</span> <span id="tour-duration"></span>
+                        <span class="icon" style="color: var(--text-secondary);"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg></span> <span id="tour-location"></span>
                     </div>
                     <div class="detail-item">
-                        <span class="icon">👥</span> Places: <span id="tour-available"></span> / <span id="tour-max"></span>
+                        <span class="icon" style="color: var(--text-secondary);"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span> <span id="tour-duration"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="icon" style="color: var(--text-secondary);"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg></span> 
+                        <span><span id="tour-available"></span> / <span id="tour-max"></span></span>
                     </div>
                 </div>
 
@@ -115,8 +119,34 @@
             document.getElementById('tour-title').textContent = tour.title;
             document.getElementById('tour-rating').textContent = tour.rating === 0.0 ? '0.0' : tour.rating;
             document.getElementById('tour-reviews').textContent = tour.reviewsCount || 0;
+
+            let timeStr = tour.startTime || 'TBA';
+            if (timeStr && timeStr.length > 5 && timeStr.includes(':')) {
+                timeStr = timeStr.substring(0, 5); // Example: 08:00:00 -> 08:00
+            }
+            
+            let dateStr = tour.scheduledDate || 'TBD';
+            try {
+                const d = new Date(tour.scheduledDate);
+                if (!isNaN(d.getTime())) {
+                    dateStr = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+                }
+            } catch(e) {}
+            
+            document.getElementById('tour-datetime').textContent = `${dateStr} at ${timeStr}`;
             document.getElementById('tour-location').textContent = tour.location;
-            document.getElementById('tour-duration').textContent = tour.duration;
+            
+            function formatDuration(d) {
+                if (!d) return '';
+                if (d.includes(':')) {
+                    const parts = d.split(':');
+                    const h = parseInt(parts[0], 10);
+                    const m = parseInt(parts[1], 10);
+                    return `${h > 0 ? h + ' hours' : ''}${h > 0 && m > 0 ? ' ' : ''}${m > 0 ? m + ' mins' : ''}`.trim();
+                }
+                return d;
+            }
+            document.getElementById('tour-duration').textContent = formatDuration(tour.duration);
             document.getElementById('tour-available').textContent = tour.availableSpots;
             document.getElementById('tour-max').textContent = tour.maxGroupSize;
             document.getElementById('tour-description').textContent = tour.description;
