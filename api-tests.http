@@ -1,0 +1,53 @@
+
+###
+### Tours
+
+### Lists all tours
+GET http://localhost:8080/api/v1/tours
+Accept: application/json
+
+###
+### Auth
+
+### Login with guide
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+username=guide@gmail.com&password=secret123
+
+###
+
+### Create a new tour (Cookie session handles auth automatically)
+POST http://localhost:8080/api/v1/tours/guide/me
+Content-Type: application/json
+
+{
+  "title": "Тестов Тур през API",
+  "description": "Тестово описание",
+  "location": "София",
+  "duration": "3 hours",
+  "pricePerPerson": 150.0,
+  "maxGroupSize": 10,
+  "meetingPoint": "НДК"
+}
+
+###
+
+### Update an existing tour (PUT) - Needs Guide authentication
+PUT http://localhost:8080/api/v1/tours/3
+Content-Type: application/json
+
+{
+  "title": "Редактиран Тестов Тур",
+  "description": "Описанието е променено чрез PUT заявка",
+  "location": "Пловдив",
+  "duration": "3 days",
+  "pricePerPerson": 190.0,
+  "maxGroupSize": 15,
+  "meetingPoint": "Античен театър"
+}
+
+###
+
+### Delete a tour (DELETE) - Needs Guide/Admin authentication
+DELETE http://localhost:8080/api/v1/tours/3
