@@ -7,12 +7,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -94,24 +92,12 @@ public class Tour {
     @JoinColumn(name = "tour_details_id", referencedColumnName = "id")
     private TourDetails tourDetails;
 
-    // OneToMany - one TOUR -> many IMAGES
+    // OneToOne - one TOUR -> one IMAGE
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Builder.Default
-    private Set<TourImage> tourImages = new HashSet<>();
+    @OneToOne(mappedBy = "tour", cascade = CascadeType.ALL)
+    private TourImage tourImage;
 
-    // ManyToMany - many TOURS -> many TAGS
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "tour_tags",
-            joinColumns = @JoinColumn(name = "tour_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    @Builder.Default
-    private Set<Tag> tags = new HashSet<>();
 
     // OneToMany - one TOUR -> many BOOKINGS
     @EqualsAndHashCode.Exclude

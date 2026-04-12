@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Set;
 
 @Data
 @Builder
@@ -34,6 +33,4 @@ public class TourDto {
     private Integer reviewsCount;
     private String meetingPoint;
     private String imageUrl;
-    
-    private Set<String> tags;
 }

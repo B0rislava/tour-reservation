@@ -79,7 +79,7 @@ public class DataInitializer implements CommandLineRunner {
                     .startTime(LocalTime.of(8, 0))
                     .build();
 
-            rilaTour.getTourImages().add(TourImage.builder()
+            rilaTour.setTourImage(TourImage.builder()
                     .tour(rilaTour)
                     .fileName("rila-lakes.jpg")
                     .fileType("image/jpeg")
@@ -99,7 +99,7 @@ public class DataInitializer implements CommandLineRunner {
                     .startTime(LocalTime.of(9, 30))
                     .build();
 
-            varnaTour.getTourImages().add(TourImage.builder()
+            varnaTour.setTourImage(TourImage.builder()
                     .tour(varnaTour)
                     .fileName("varna.jpg")
                     .fileType("image/jpeg")

@@ -1,13 +1,9 @@
 package com.spring.tour_reservation.mapper;
 
 import com.spring.tour_reservation.dto.TourDto;
-import com.spring.tour_reservation.model.Tag;
 import com.spring.tour_reservation.model.Tour;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public abstract class TourMapper {
@@ -20,14 +16,9 @@ public abstract class TourMapper {
     public abstract TourDto toDto(Tour tour);
 
     protected String getMainImageUrl(Tour tour) {
-        if (tour.getTourImages() == null || tour.getTourImages().isEmpty()) {
+        if (tour.getTourImage() == null) {
             return null;
         }
-        return tour.getTourImages().iterator().next().getContent();
-    }
-
-    protected Set<String> mapTags(Set<Tag> tags) {
-        if (tags == null) return null;
-        return tags.stream().map(Tag::getName).collect(Collectors.toSet());
+        return tour.getTourImage().getContent();
     }
 }

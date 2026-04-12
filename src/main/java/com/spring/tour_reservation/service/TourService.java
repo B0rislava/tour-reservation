@@ -84,7 +84,7 @@ public class TourService {
                     .fileName("api-upload.jpg")
                     .fileType("image/jpeg")
                     .build();
-            tour.getTourImages().add(tourImage);
+            tour.setTourImage(tourImage);
         }
 
         tourRepository.save(tour);
@@ -128,14 +128,13 @@ public class TourService {
         tour.setStartTime(updateDto.getStartTime());
         
         if (updateDto.getImageUrl() != null && !updateDto.getImageUrl().isEmpty()) {
-            tour.getTourImages().clear();
-            TourImage tourImage = TourImage.builder()
+            TourImage newImage = TourImage.builder()
                     .tour(tour)
                     .content(updateDto.getImageUrl())
                     .fileName("api-upload.jpg")
                     .fileType("image/jpeg")
                     .build();
-            tour.getTourImages().add(tourImage);
+            tour.setTourImage(newImage);
         }
         
         tourRepository.save(tour);
