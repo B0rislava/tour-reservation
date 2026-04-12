@@ -2,6 +2,7 @@ package com.spring.tour_reservation.service;
 
 import com.spring.tour_reservation.dto.TourDto;
 import com.spring.tour_reservation.model.Tour;
+import com.spring.tour_reservation.model.TourImage;
 import com.spring.tour_reservation.repository.TourRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -70,9 +71,21 @@ public class TourService {
                 .availableSpots(createDto.getMaxGroupSize())
                 .pricePerPerson(createDto.getPricePerPerson())
                 .meetingPoint(createDto.getMeetingPoint())
+                .scheduledDate(createDto.getScheduledDate())
+                .startTime(createDto.getStartTime())
                 .status("ACTIVE")
                 .guide(guide)
                 .build();
+
+        if (createDto.getImageUrl() != null && !createDto.getImageUrl().isEmpty()) {
+            TourImage tourImage = TourImage.builder()
+                    .tour(tour)
+                    .content(createDto.getImageUrl())
+                    .fileName("api-upload.jpg")
+                    .fileType("image/jpeg")
+                    .build();
+            tour.getTourImages().add(tourImage);
+        }
 
         tourRepository.save(tour);
         return tour.getId();
@@ -111,6 +124,19 @@ public class TourService {
         tour.setPricePerPerson(updateDto.getPricePerPerson());
         tour.setMaxGroupSize(updateDto.getMaxGroupSize());
         tour.setMeetingPoint(updateDto.getMeetingPoint());
+        tour.setScheduledDate(updateDto.getScheduledDate());
+        tour.setStartTime(updateDto.getStartTime());
+        
+        if (updateDto.getImageUrl() != null && !updateDto.getImageUrl().isEmpty()) {
+            tour.getTourImages().clear();
+            TourImage tourImage = TourImage.builder()
+                    .tour(tour)
+                    .content(updateDto.getImageUrl())
+                    .fileName("api-upload.jpg")
+                    .fileType("image/jpeg")
+                    .build();
+            tour.getTourImages().add(tourImage);
+        }
         
         tourRepository.save(tour);
     }
