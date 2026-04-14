@@ -18,5 +18,9 @@ spring:
         format_sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
-  liquibase:
-    enabled: false
+
+app:
+  security:
+    admin-password: ${ADMIN_PASSWORD:admin123}
+    guide-password: ${GUIDE_PASSWORD:secret123}
+
