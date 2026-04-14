@@ -191,7 +191,10 @@
                         try {
                             const res = await fetch('/api/v1/bookings/create', {
                                 method: 'POST',
-                                headers: {'Content-Type': 'application/json'},
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-XSRF-TOKEN': getCsrfToken()
+                                },
                                 body: JSON.stringify({ 
                                     tourId: parseInt(currentTourId), 
                                     participants: parseInt(participants) 
@@ -246,7 +249,12 @@
                         document.getElementById('tour-fav-btn').addEventListener('click', async () => {
                             const method = isFavorited ? 'DELETE' : 'POST';
                             try {
-                                const response = await fetch('/api/v1/users/favorites/' + tour.id, { method: method });
+                                const response = await fetch('/api/v1/users/favorites/' + tour.id, { 
+                                    method: method,
+                                    headers: {
+                                        'X-XSRF-TOKEN': getCsrfToken()
+                                    }
+                                });
                                 if (response.ok) {
                                     isFavorited = !isFavorited;
                                     updateFavoriteIcon();

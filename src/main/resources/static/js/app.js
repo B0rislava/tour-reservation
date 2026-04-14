@@ -1,3 +1,9 @@
+function getCsrfToken() {
+    return document.cookie.split('; ')
+        .find(row => row.startsWith('XSRF-TOKEN='))
+        ?.split('=')[1];
+}
+
 async function checkAuth() {
     try {
         const response = await fetch('/api/v1/users/profile');
@@ -24,7 +30,7 @@ async function renderNav(activePage = '') {
 
     if (isAuthenticated && user) {
         const initial = user.firstName ? user.firstName.charAt(0).toUpperCase() : 'U';
-        
+
         if (user.role === 'ADMIN') {
             navHtml += `
                 <a href="/admin/dashboard.html" class="${activePage === 'admin-dashboard' ? 'active' : ''}">Admin Panel</a>
@@ -90,7 +96,10 @@ async function toggleFavorite(tourId, iconElement) {
 
     try {
         const response = await fetch(`/api/v1/users/favorites/${tourId}`, {
-            method: method
+            method: method,
+            headers: {
+                'X-XSRF-TOKEN': getCsrfToken()
+            }
         });
 
         if (response.ok) {
@@ -139,7 +148,7 @@ function formatDate(dateStr) {
         const d = new Date(dateStr);
         if (isNaN(d.getTime())) return dateStr;
         return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-    } catch(e) {
+    } catch (e) {
         return dateStr;
     }
 }

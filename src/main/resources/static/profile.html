@@ -134,7 +134,10 @@
             try {
                 const response = await fetch('/api/v1/users/profile', {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-XSRF-TOKEN': getCsrfToken()
+                    },
                     body: JSON.stringify(dto)
                 });
                 
@@ -162,7 +165,10 @@
             
             try {
                 const response = await fetch('/api/v1/users/profile', {
-                    method: 'DELETE'
+                    method: 'DELETE',
+                    headers: {
+                        'X-XSRF-TOKEN': getCsrfToken()
+                    }
                 });
                 
                 if (response.ok) {
@@ -181,7 +187,12 @@
             if (!confirm('Are you sure you want to logout?')) return;
             try {
                 // Spring security default logout handles POST without any specific body.
-                await fetch('/api/v1/auth/logout', { method: 'POST' });
+                await fetch('/api/v1/auth/logout', {
+                    method: 'POST',
+                    headers: {
+                        'X-XSRF-TOKEN': getCsrfToken()
+                    }
+                });
                 window.location.href = '/login.html?logout=true';
             } catch (e) {
                 console.error('Logout failed', e);

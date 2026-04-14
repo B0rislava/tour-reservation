@@ -6,6 +6,7 @@
     <title>Sign Up | Tourly</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/styles.css">
+    <script src="/js/app.js" defer></script>
 </head>
 <body class="login-layout">
     <div class="login-card" style="max-width: 480px;">
@@ -84,7 +85,10 @@
             try {
                 const response = await fetch('/api/v1/auth/signup', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-XSRF-TOKEN': getCsrfToken()
+                    },
                     body: JSON.stringify(data)
                 });
 

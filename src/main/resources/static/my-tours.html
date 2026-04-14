@@ -123,7 +123,10 @@
 
             try {
                 const res = await fetch(`/api/v1/tours/${id}`, {
-                    method: 'DELETE'
+                    method: 'DELETE',
+                    headers: {
+                        'X-XSRF-TOKEN': getCsrfToken()
+                    }
                 });
 
                 if (res.ok) {
