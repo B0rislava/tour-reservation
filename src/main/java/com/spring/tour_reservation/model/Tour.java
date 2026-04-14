@@ -65,8 +65,6 @@ public class Tour {
     @Column(name = "price_per_person", nullable = false)
     private Double pricePerPerson;
 
-
-
     @Column(name = "scheduled_date")
     private LocalDate scheduledDate;
 
@@ -83,20 +81,12 @@ public class Tour {
 
     @Column(name = "meeting_point")
     private String meetingPoint;
-    
-    // OneToOne - one TOUR -> one TOUR_DETAILS
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "tour_details_id", referencedColumnName = "id")
-    private TourDetails tourDetails;
 
     // OneToOne - one TOUR -> one IMAGE
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @OneToOne(mappedBy = "tour", cascade = CascadeType.ALL)
     private TourImage tourImage;
-
 
     // OneToMany - one TOUR -> many BOOKINGS
     @EqualsAndHashCode.Exclude

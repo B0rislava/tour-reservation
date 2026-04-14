@@ -159,16 +159,13 @@ gradlew bootRun
    * `id`, `user_id` (FK), `tour_id` (FK), `participants`, `status`, `total_price`, `booking_date`.
 4. **Tour Image** *(OneToOne - всеки тур има точно една снимка)*
    * `id`, `tour_id` (FK, unique), `file_name`, `file_type`, `content` (URL на снимката).
-5. **Tour Details** *(OneToOne - допълнителни детайли за тур)*
-   * `id` + допълнителна информация за тура.
-6. **Saved Tours / Favorites** *(ManyToMany join table)*
+5. **Saved Tours / Favorites** *(ManyToMany join table)*
    * `user_id`, `tour_id` - свързва потребители с любими турове.
 
 ### Релации:
 | Тип | От | Към |
 |---|---|---|
 | OneToOne | Tour | TourImage |
-| OneToOne | Tour | TourDetails |
 | OneToMany | Tour | Booking |
 | ManyToMany | User | Tour (Favorites) |
 | ManyToOne | Tour | User (Guide) |
