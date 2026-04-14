@@ -45,12 +45,8 @@ public class BookingController {
             return ResponseEntity.status(401).build();
         User user = bookingService.getUserByEmail(principal.getName());
 
-        try {
-            bookingService.bookTour(user.getId(), request.getTourId(), request.getParticipants());
-            return ResponseEntity.ok(Map.of("message", "Booking confirmed successfully!"));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
+        bookingService.bookTour(user.getId(), request.getTourId(), request.getParticipants());
+        return ResponseEntity.ok(Map.of("message", "Booking confirmed successfully!"));
     }
 
     @PostMapping("/cancel")
@@ -62,11 +58,7 @@ public class BookingController {
         User user = bookingService.getUserByEmail(principal.getName());
         Long bookingId = request.get("bookingId");
 
-        try {
-            bookingService.cancelBooking(bookingId, user.getId());
-            return ResponseEntity.ok(Map.of("message", "Booking successfully cancelled."));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
+        bookingService.cancelBooking(bookingId, user.getId());
+        return ResponseEntity.ok(Map.of("message", "Booking successfully cancelled."));
     }
 }

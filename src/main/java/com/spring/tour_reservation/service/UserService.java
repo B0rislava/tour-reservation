@@ -2,6 +2,8 @@ package com.spring.tour_reservation.service;
 
 import com.spring.tour_reservation.dto.RegistrationDto;
 import com.spring.tour_reservation.dto.UserDto;
+import com.spring.tour_reservation.dto.UserUpdateRequestDto;
+import com.spring.tour_reservation.exception.TourReservationException;
 import com.spring.tour_reservation.model.User;
 import com.spring.tour_reservation.model.UserRole;
 import com.spring.tour_reservation.repository.UserRepository;
@@ -32,11 +34,11 @@ public class UserService {
     @Transactional
     public void registerUser(RegistrationDto registrationDto) {
         if (userRepository.existsByEmail(registrationDto.getEmail())) {
-            throw new RuntimeException("User with this email already exists!");
+            throw new TourReservationException("User with this email already exists!");
         }
 
         if (!registrationDto.getPassword().equals(registrationDto.getConfirmPassword())) {
-            throw new RuntimeException("Passwords do not match!");
+            throw new TourReservationException("Passwords do not match!");
         }
 
         UserRole assignedRole = UserRole.TRAVELER;
@@ -58,14 +60,14 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserDto getUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new TourReservationException("User not found"));
         return userMapper.toDto(user);
     }
 
     @Transactional
-    public UserDto updateUserProfile(String email, com.spring.tour_reservation.dto.UserUpdateRequestDto request) {
+    public UserDto updateUserProfile(String email, UserUpdateRequestDto request) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new TourReservationException("User not found"));
         
         if (request.getFirstName() != null && !request.getFirstName().trim().isEmpty()) {
             user.setFirstName(request.getFirstName().trim());
@@ -84,10 +86,10 @@ public class UserService {
     @Transactional
     public void deleteUser(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new TourReservationException("User not found"));
         
         if (user.getRole() == UserRole.ADMIN) {
-            throw new RuntimeException("Administrators cannot delete their own accounts!");
+            throw new TourReservationException("Administrators cannot delete their own accounts!");
         }
         
         userRepository.delete(user);
@@ -96,12 +98,12 @@ public class UserService {
     @Transactional
     public void addSavedTour(String email, Long tourId) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new TourReservationException("User not found"));
         Tour tour = tourRepository.findById(tourId)
-                .orElseThrow(() -> new RuntimeException("Tour not found"));
+                .orElseThrow(() -> new TourReservationException("Tour not found"));
 
         if (user.getSavedTours().contains(tour)) {
-            throw new RuntimeException("Tour is already saved");
+            throw new TourReservationException("Tour is already saved");
         }
 
         user.getSavedTours().add(tour);
@@ -111,12 +113,12 @@ public class UserService {
     @Transactional
     public void removeSavedTour(String email, Long tourId) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new TourReservationException("User not found"));
         Tour tour = tourRepository.findById(tourId)
-                .orElseThrow(() -> new RuntimeException("Tour not found"));
+                .orElseThrow(() -> new TourReservationException("Tour not found"));
 
         if (!user.getSavedTours().contains(tour)) {
-            throw new RuntimeException("Tour is not in saved list");
+            throw new TourReservationException("Tour is not in saved list");
         }
 
         user.getSavedTours().remove(tour);
@@ -126,7 +128,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<TourDto> getSavedTours(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new TourReservationException("User not found"));
         
         return user.getSavedTours().stream()
                 .map(tourMapper::toDto)
@@ -144,10 +146,10 @@ public class UserService {
     @Transactional
     public void deleteUserById(Long id, String currentUserEmail) {
         User userToDelete = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new TourReservationException("User not found"));
         
         if (userToDelete.getEmail().equals(currentUserEmail)) {
-            throw new RuntimeException("You cannot delete your own account!");
+            throw new TourReservationException("You cannot delete your own account!");
         }
         
         userRepository.deleteById(id);

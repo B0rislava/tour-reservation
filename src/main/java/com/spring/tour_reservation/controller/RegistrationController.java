@@ -21,11 +21,7 @@ public class RegistrationController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationDto registrationDto) {
-        try {
-            userService.registerUser(registrationDto);
-            return ResponseEntity.ok(Map.of("message", "Registration successful!"));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
+        userService.registerUser(registrationDto);
+        return ResponseEntity.ok(Map.of("message", "Registration successful!"));
     }
 }

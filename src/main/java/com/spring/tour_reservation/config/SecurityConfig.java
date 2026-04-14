@@ -1,5 +1,6 @@
 package com.spring.tour_reservation.config;
 
+import com.spring.tour_reservation.exception.TourReservationException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -73,7 +74,7 @@ public class SecurityConfig {
 
             return http.build();
         } catch (Exception e) {
-            throw new RuntimeException("Failed to configure security filter chain", e);
+            throw new TourReservationException("Failed to configure security filter chain: " + e.getMessage());
         }
     }
 
@@ -87,7 +88,7 @@ public class SecurityConfig {
         try {
             return config.getAuthenticationManager();
         } catch (Exception e) {
-            throw new RuntimeException("Failed to get authentication manager", e);
+            throw new TourReservationException("Failed to get authentication manager: " + e.getMessage());
         }
     }
 

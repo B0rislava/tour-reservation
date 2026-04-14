@@ -1,6 +1,7 @@
 package com.spring.tour_reservation.service;
 
 import com.spring.tour_reservation.dto.BookingDto;
+import com.spring.tour_reservation.exception.TourReservationException;
 import com.spring.tour_reservation.model.Booking;
 import com.spring.tour_reservation.model.BookingStatus;
 import com.spring.tour_reservation.model.Tour;
@@ -30,22 +31,22 @@ public class BookingService {
     @Transactional
     public void bookTour(Long userId, Long tourId, int participants) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new TourReservationException("User not found"));
 
         if (user.getRole() == com.spring.tour_reservation.model.UserRole.GUIDE || 
             user.getRole() == com.spring.tour_reservation.model.UserRole.ADMIN) {
-            throw new RuntimeException("Only travelers can book tours!");
+            throw new TourReservationException("Only travelers can book tours!");
         }
 
         Tour tour = tourRepository.findById(tourId)
-                .orElseThrow(() -> new RuntimeException("Tour not found"));
+                .orElseThrow(() -> new TourReservationException("Tour not found"));
 
         if (bookingRepository.existsByUserIdAndTourId(userId, tourId)) {
-            throw new RuntimeException("You have already booked this tour!");
+            throw new TourReservationException("You have already booked this tour!");
         }
 
         if (tour.getAvailableSpots() < participants) {
-            throw new RuntimeException("Not enough available spots!");
+            throw new TourReservationException("Not enough available spots!");
         }
 
         tour.setAvailableSpots(tour.getAvailableSpots() - participants);
@@ -65,10 +66,10 @@ public class BookingService {
     @Transactional
     public void cancelBooking(Long bookingId, Long userId) {
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new RuntimeException("Booking not found"));
+                .orElseThrow(() -> new TourReservationException("Booking not found"));
 
         if (!booking.getUser().getId().equals(userId)) {
-            throw new RuntimeException("You are not authorized to cancel this booking!");
+            throw new TourReservationException("You are not authorized to cancel this booking!");
         }
 
         Tour tour = booking.getTour();
@@ -88,6 +89,6 @@ public class BookingService {
 
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found: " + email));
+                .orElseThrow(() -> new TourReservationException("User not found: " + email));
     }
 }

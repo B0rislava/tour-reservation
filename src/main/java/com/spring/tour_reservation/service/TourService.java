@@ -1,6 +1,7 @@
 package com.spring.tour_reservation.service;
 
 import com.spring.tour_reservation.dto.TourDto;
+import com.spring.tour_reservation.exception.TourReservationException;
 import com.spring.tour_reservation.model.Tour;
 import com.spring.tour_reservation.model.TourImage;
 import com.spring.tour_reservation.model.TourStatus;
@@ -47,14 +48,14 @@ public class TourService {
     @Transactional(readOnly = true)
     public TourDto getTourById(Long id) {
         Tour tour = tourRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Tour not found!"));
+                .orElseThrow(() -> new TourReservationException("Tour not found!"));
         return tourMapper.toDto(tour);
     }
 
     @Transactional(readOnly = true)
     public List<TourDto> getToursByGuideEmail(String email) {
         User guide = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Guide not found"));
+                .orElseThrow(() -> new TourReservationException("Guide not found"));
 
         return tourRepository.findByGuideId(guide.getId())
                 .stream()
@@ -65,10 +66,10 @@ public class TourService {
     @Transactional
     public Long createTour(TourDto createDto, String guideEmail) {
         User guide = userRepository.findByEmail(guideEmail)
-                .orElseThrow(() -> new RuntimeException("Guide not found"));
+                .orElseThrow(() -> new TourReservationException("Guide not found"));
 
         if (guide.getRole() != UserRole.GUIDE) {
-            throw new RuntimeException("Only guides can create tours!");
+            throw new TourReservationException("Only guides can create tours!");
         }
 
         Tour tour = Tour.builder()
@@ -103,14 +104,14 @@ public class TourService {
     @Transactional
     public void deleteTour(Long id, String guideEmail) {
         Tour tour = tourRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Tour not found!"));
+                .orElseThrow(() -> new TourReservationException("Tour not found!"));
         
         // Only the guide who created it OR an admin can delete it
         if (!tour.getGuide().getEmail().equals(guideEmail)) {
             User user = userRepository.findByEmail(guideEmail)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+                    .orElseThrow(() -> new TourReservationException("User not found"));
             if (user.getRole() != UserRole.ADMIN) {
-                throw new RuntimeException("You are not authorized to delete this tour!");
+                throw new TourReservationException("You are not authorized to delete this tour!");
             }
         }
         
@@ -120,10 +121,10 @@ public class TourService {
     @Transactional
     public void updateTour(Long id, TourDto updateDto, String guideEmail) {
         Tour tour = tourRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Tour not found!"));
+                .orElseThrow(() -> new TourReservationException("Tour not found!"));
         
         if (!tour.getGuide().getEmail().equals(guideEmail)) {
-            throw new RuntimeException("You are not authorized to edit this tour!");
+            throw new TourReservationException("You are not authorized to edit this tour!");
         }
 
         tour.setTitle(updateDto.getTitle());
