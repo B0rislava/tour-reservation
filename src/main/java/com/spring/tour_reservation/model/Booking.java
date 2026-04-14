@@ -9,6 +9,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -52,8 +54,9 @@ public class Booking {
     @Builder.Default
     private LocalDateTime bookingDate = LocalDateTime.now();
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     @Builder.Default
-    private String status = "CONFIRMED";
+    private BookingStatus status = BookingStatus.CONFIRMED;
 
 }

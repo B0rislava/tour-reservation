@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
 import jakarta.validation.Valid;
 import java.security.Principal;
@@ -37,6 +38,12 @@ public class TourController {
     @Operation(summary = "Get specific tour details by ID")
     public ResponseEntity<TourDto> getTourDetails(@PathVariable Long id) {
         return ResponseEntity.ok(tourService.getTourById(id));
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "Search tours by location")
+    public ResponseEntity<List<TourDto>> searchTours(@RequestParam String location) {
+        return ResponseEntity.ok(tourService.searchToursByLocation(location));
     }
 
     @GetMapping("/guide/me")

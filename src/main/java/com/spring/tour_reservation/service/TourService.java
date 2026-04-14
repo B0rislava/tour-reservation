@@ -3,6 +3,7 @@ package com.spring.tour_reservation.service;
 import com.spring.tour_reservation.dto.TourDto;
 import com.spring.tour_reservation.model.Tour;
 import com.spring.tour_reservation.model.TourImage;
+import com.spring.tour_reservation.model.TourStatus;
 import com.spring.tour_reservation.repository.TourRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,15 @@ public class TourService {
 
     @Transactional(readOnly = true)
     public List<TourDto> getAllTours() {
-        return tourRepository.findAll()
+        return tourRepository.findByStatus(TourStatus.ACTIVE)
+                .stream()
+                .map(tourMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<TourDto> searchToursByLocation(String location) {
+        return tourRepository.findByLocationContainingIgnoreCase(location)
                 .stream()
                 .map(tourMapper::toDto)
                 .collect(Collectors.toList());
@@ -73,7 +82,7 @@ public class TourService {
                 .meetingPoint(createDto.getMeetingPoint())
                 .scheduledDate(createDto.getScheduledDate())
                 .startTime(createDto.getStartTime())
-                .status("ACTIVE")
+                .status(TourStatus.ACTIVE)
                 .guide(guide)
                 .build();
 

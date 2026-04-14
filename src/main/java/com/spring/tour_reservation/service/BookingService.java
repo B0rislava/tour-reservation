@@ -2,6 +2,7 @@ package com.spring.tour_reservation.service;
 
 import com.spring.tour_reservation.dto.BookingDto;
 import com.spring.tour_reservation.model.Booking;
+import com.spring.tour_reservation.model.BookingStatus;
 import com.spring.tour_reservation.model.Tour;
 import com.spring.tour_reservation.model.User;
 import com.spring.tour_reservation.repository.BookingRepository;
@@ -55,7 +56,7 @@ public class BookingService {
                 .tour(tour)
                 .numberOfParticipants(participants)
                 .bookingDate(LocalDateTime.now())
-                .status("CONFIRMED")
+                .status(BookingStatus.CONFIRMED)
                 .build();
 
         bookingRepository.save(booking);

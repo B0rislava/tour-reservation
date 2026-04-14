@@ -1,5 +1,7 @@
 package com.spring.tour_reservation.dto;
 
+import com.spring.tour_reservation.model.TourStatus;
+
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -52,7 +54,7 @@ public class TourDto {
     private LocalTime startTime;
 
     private LocalDateTime createdAt;
-    private String status;
+    private TourStatus status;
     private String meetingPoint;
     private String imageUrl;
 }

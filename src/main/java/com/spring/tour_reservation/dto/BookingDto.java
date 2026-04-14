@@ -1,5 +1,7 @@
 package com.spring.tour_reservation.dto;
 
+import com.spring.tour_reservation.model.BookingStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +25,7 @@ public class BookingDto {
     
     private Integer numberOfParticipants;
     private LocalDateTime bookingDate;
-    private String status;
+    private BookingStatus status;
     private BigDecimal totalPrice;
     
 }
