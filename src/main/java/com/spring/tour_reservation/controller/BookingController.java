@@ -2,7 +2,6 @@ package com.spring.tour_reservation.controller;
 
 import com.spring.tour_reservation.dto.BookingDto;
 import com.spring.tour_reservation.model.User;
-import com.spring.tour_reservation.repository.UserRepository;
 import com.spring.tour_reservation.service.BookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,23 +26,24 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class BookingController {
 
     private final BookingService bookingService;
-    private final UserRepository userRepository;
 
     @GetMapping
     @Operation(summary = "List all bookings for the authenticated user")
     public ResponseEntity<List<BookingDto>> listBookings(Principal principal) {
-        if (principal == null) return ResponseEntity.status(401).build();
-        User user = userRepository.findByEmail(principal.getName()).orElseThrow();
+        if (principal == null)
+            return ResponseEntity.status(401).build();
+        User user = bookingService.getUserByEmail(principal.getName());
         return ResponseEntity.ok(bookingService.getBookingsForUser(user.getId()));
     }
 
     @PostMapping("/create")
     @Operation(summary = "Create a new booking for a tour")
-    public ResponseEntity<?> createBooking(@RequestBody BookingRequestDto request, 
-                                           Principal principal) {
-        if (principal == null) return ResponseEntity.status(401).build();                                    
-        User user = userRepository.findByEmail(principal.getName()).orElseThrow();
-        
+    public ResponseEntity<?> createBooking(@RequestBody BookingRequestDto request,
+            Principal principal) {
+        if (principal == null)
+            return ResponseEntity.status(401).build();
+        User user = bookingService.getUserByEmail(principal.getName());
+
         try {
             bookingService.bookTour(user.getId(), request.getTourId(), request.getParticipants());
             return ResponseEntity.ok(Map.of("message", "Booking confirmed successfully!"));
@@ -55,9 +55,10 @@ public class BookingController {
     @PostMapping("/cancel")
     @Operation(summary = "Cancel an existing booking")
     public ResponseEntity<?> cancelBooking(@RequestBody Map<String, Long> request,
-                                           Principal principal) {
-        if (principal == null) return ResponseEntity.status(401).build();
-        User user = userRepository.findByEmail(principal.getName()).orElseThrow();
+            Principal principal) {
+        if (principal == null)
+            return ResponseEntity.status(401).build();
+        User user = bookingService.getUserByEmail(principal.getName());
         Long bookingId = request.get("bookingId");
 
         try {
