@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.spring.tour_reservation.dto.BookingRequestDto;
@@ -38,7 +39,7 @@ public class BookingController {
 
     @PostMapping("/create")
     @Operation(summary = "Create a new booking for a tour")
-    public ResponseEntity<?> createBooking(@RequestBody BookingRequestDto request,
+    public ResponseEntity<?> createBooking(@Valid @RequestBody BookingRequestDto request,
             Principal principal) {
         if (principal == null)
             return ResponseEntity.status(401).build();

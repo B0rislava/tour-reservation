@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,7 +42,7 @@ public class UserController {
 
     @PutMapping("/profile")
     @Operation(summary = "Update the authenticated user's profile")
-    public ResponseEntity<UserDto> updateProfile(@RequestBody UserUpdateRequestDto request, Principal principal) {
+    public ResponseEntity<UserDto> updateProfile(@Valid @RequestBody UserUpdateRequestDto request, Principal principal) {
         if (principal == null) {
             return ResponseEntity.status(401).build();
         }
