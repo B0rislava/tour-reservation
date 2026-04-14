@@ -12,7 +12,7 @@ public interface BookingMapper {
     @Mapping(target = "userName", expression = "java(booking.getUser().getFirstName() + \" \" + booking.getUser().getLastName())")
     @Mapping(target = "tourId", source = "tour.id")
     @Mapping(target = "tourTitle", source = "tour.title")
-    @Mapping(target = "totalPrice", expression = "java(booking.getTour().getPricePerPerson() * booking.getNumberOfParticipants())")
+    @Mapping(target = "totalPrice", expression = "java(booking.getTour().getPricePerPerson().multiply(java.math.BigDecimal.valueOf(booking.getNumberOfParticipants())))")
     BookingDto toDto(Booking booking);
 
 }

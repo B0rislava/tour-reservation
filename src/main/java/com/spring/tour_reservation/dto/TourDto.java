@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -41,8 +42,8 @@ public class TourDto {
     private Integer availableSpots;
 
     @NotNull(message = "Price per person is required")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
-    private Double pricePerPerson;
+    @DecimalMin(value = "0.01", message = "Price must be greater than 0")
+    private BigDecimal pricePerPerson;
 
     @NotNull(message = "Scheduled date is required")
     private LocalDate scheduledDate;

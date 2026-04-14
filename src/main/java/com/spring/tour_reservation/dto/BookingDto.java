@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -23,6 +24,6 @@ public class BookingDto {
     private Integer numberOfParticipants;
     private LocalDateTime bookingDate;
     private String status;
-    private Double totalPrice;
+    private BigDecimal totalPrice;
     
 }

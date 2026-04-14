@@ -8,20 +8,30 @@ import com.spring.tour_reservation.repository.TourRepository;
 import com.spring.tour_reservation.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class DataInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final TourRepository tourRepository;
     private final PasswordEncoder passwordEncoder;
+
+    @Value("${app.security.admin-password}")
+    private String adminPassword;
+
+    @Value("${app.security.guide-password}")
+    private String guidePassword;
 
     @Override
     public void run(String @NonNull ... args) {
@@ -31,7 +41,7 @@ public class DataInitializer implements CommandLineRunner {
                     if (user.getRole() != UserRole.ADMIN) {
                         user.setRole(UserRole.ADMIN);
                         userRepository.save(user);
-                        System.out.println("Updated existing user to ADMIN role: admin@gmail.com");
+                        log.info("Updated existing user to ADMIN role: admin@gmail.com");
                     }
                 },
                 () -> {
@@ -39,12 +49,12 @@ public class DataInitializer implements CommandLineRunner {
                             .email("admin@gmail.com")
                             .firstName("Admin")
                             .lastName("User")
-                            .password(passwordEncoder.encode("admin123"))
+                            .password(passwordEncoder.encode(adminPassword))
                             .role(UserRole.ADMIN)
                             .bio("System administrator.")
                             .build();
                     userRepository.save(admin);
-                    System.out.println("Created new admin user: admin@gmail.com");
+                    log.info("Created new admin user: admin@gmail.com");
                 }
         );
 
@@ -53,7 +63,7 @@ public class DataInitializer implements CommandLineRunner {
                     .email("guide@gmail.com")
                     .firstName("Ivan")
                     .lastName("Ivanov")
-                    .password(passwordEncoder.encode("secret123"))
+                    .password(passwordEncoder.encode(guidePassword))
                     .role(UserRole.GUIDE)
                     .bio("Veteran guide with 15 years of experience in the mountains.")
                     .build();
@@ -74,7 +84,7 @@ public class DataInitializer implements CommandLineRunner {
                     .duration("05:30")
                     .maxGroupSize(15)
                     .availableSpots(15)
-                    .pricePerPerson(45.0)
+                    .pricePerPerson(BigDecimal.valueOf(45.0))
                     .meetingPoint("Alexander Nevsky Cathedral, Sofia")
                     .scheduledDate(LocalDate.now().plusDays(5))
                     .startTime(LocalTime.of(8, 0))
@@ -95,7 +105,7 @@ public class DataInitializer implements CommandLineRunner {
                     .duration("2:00")
                     .maxGroupSize(8)
                     .availableSpots(8)
-                    .pricePerPerson(120.0)
+                    .pricePerPerson(BigDecimal.valueOf(120.0))
                     .meetingPoint("Varna Central Bus Station")
                     .scheduledDate(LocalDate.now().plusWeeks(2))
                     .startTime(LocalTime.of(9, 30))
@@ -110,7 +120,7 @@ public class DataInitializer implements CommandLineRunner {
 
             tourRepository.save(rilaTour);
             tourRepository.save(varnaTour);
-            System.out.println("Initialized demo tours.");
+            log.info("Initialized demo tours.");
         }
     }
 }

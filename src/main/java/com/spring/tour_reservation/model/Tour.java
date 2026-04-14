@@ -19,6 +19,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -62,8 +63,8 @@ public class Tour {
     @Column(name = "available_spots", nullable = false)
     private Integer availableSpots;
 
-    @Column(name = "price_per_person", nullable = false)
-    private Double pricePerPerson;
+    @Column(name = "price_per_person", nullable = false, precision = 10, scale = 2)
+    private BigDecimal pricePerPerson;
 
     @Column(name = "scheduled_date")
     private LocalDate scheduledDate;
