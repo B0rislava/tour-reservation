@@ -54,7 +54,11 @@ public class TourDto {
     private LocalTime startTime;
 
     private LocalDateTime createdAt;
+
     private TourStatus status;
+
+    @NotBlank(message = "Meeting point is required")
     private String meetingPoint;
+
     private String imageUrl;
 }
