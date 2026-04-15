@@ -17,7 +17,6 @@ async function checkAuth() {
     return { isAuthenticated: false, user: null };
 }
 
-// Function to render the navigation bar
 async function renderNav(activePage = '') {
     const navLinksContainer = document.querySelector('.nav-links');
     if (!navLinksContainer) return;

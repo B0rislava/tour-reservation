@@ -18,6 +18,7 @@ public class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    // validation errors("tour name cannot be blank)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(
             MethodArgumentNotValidException ex,
@@ -40,6 +41,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
+    // business logic ("tour not found")
     @ExceptionHandler(TourReservationException.class)
     public ResponseEntity<ErrorResponse> handleTourReservationException(
             TourReservationException ex,

@@ -35,7 +35,7 @@ public class SecurityConfig {
             http
                     .csrf(csrf -> csrf
                             .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                            .ignoringRequestMatchers("/api/v1/auth/login")
+                            .ignoringRequestMatchers("/api/v1/auth/login", "/api/v1/auth/signup")
                     )
                     .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                     .authorizeHttpRequests(auth -> auth
@@ -49,7 +49,8 @@ public class SecurityConfig {
                                     "/v3/api-docs/**",
                                     "/swagger-ui/**",
                                     "/*.html",
-                                    "/"
+                                    "/",
+                                    "/favicon.ico"
                             ).permitAll()
                             .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                             .requestMatchers("/api/v1/bookings/**", "/api/v1/users/**")
