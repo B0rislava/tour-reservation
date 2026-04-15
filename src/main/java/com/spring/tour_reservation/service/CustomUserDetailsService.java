@@ -15,14 +15,21 @@ import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
+@lombok.extern.slf4j.Slf4j
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(@NonNull String email) throws UsernameNotFoundException {
+        log.info("Attempting to load user by email: {}", email);
         User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
+            .orElseThrow(() -> {
+                log.warn("User not found with email: {}", email);
+                return new UsernameNotFoundException("User not found: " + email);
+            });
+
+        log.info("Successfully loaded user: {} with role: {}", email, user.getRole());
 
         return new CustomUserDetails(
             user.getEmail(),

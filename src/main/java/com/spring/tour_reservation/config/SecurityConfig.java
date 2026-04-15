@@ -26,6 +26,7 @@ import java.io.IOException;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@lombok.extern.slf4j.Slf4j
 public class SecurityConfig {
 
     @Bean
@@ -60,8 +61,14 @@ public class SecurityConfig {
                     )
                     .formLogin(form -> form
                             .loginProcessingUrl("/api/v1/auth/login")
-                            .successHandler((req, res, auth) -> res.setStatus(200))
-                            .failureHandler((req, res, exc) -> res.setStatus(401))
+                    .successHandler((req, res, auth) -> {
+                        log.info("Successfully logged in user: {}", auth.getName());
+                        res.setStatus(200);
+                    })
+                    .failureHandler((req, res, exc) -> {
+                        log.warn("Login failed for user: {}. Reason: {}", req.getParameter("username"), exc.getMessage());
+                        res.setStatus(401);
+                    })
                             .permitAll()
                     )
                     .logout(logout -> logout
